@@ -52,24 +52,50 @@ public class Inventory {
         items.add(item);
     }
 
-public void display() {
-    int potions = 0;
-    int apples = 0;
-    boolean hasMap = false;
+    public void display() {
+        int potions = 0;
+        int apples = 0;
+        boolean hasMap = false;
 
-    // Count items for explicit display
-    for (String item : items) {
-        if (item.equalsIgnoreCase("Potion")) potions++;
-        else if (item.equalsIgnoreCase("Apple")) apples++;
-        else if (item.equalsIgnoreCase("Map")) hasMap = true;
+        // Count items for explicit display
+        for (String item : items) {
+            if (item.equalsIgnoreCase("Potion"))
+                potions++;
+            else if (item.equalsIgnoreCase("Apple"))
+                apples++;
+            else if (item.equalsIgnoreCase("Map"))
+                hasMap = true;
+        }
+
+        System.out.println("\n--- INVENTORY ---");
+        if (hasMap) {
+            System.out.println("- [MAP]");
+        }
+        System.out.println("- [" + potions + "] Potion(s)");
+        System.out.println("- [" + apples + "] Apple(s)");
+        System.out.println("-----------------");
     }
 
-    System.out.println("\n--- INVENTORY ---");
-    if (hasMap) {
-        System.out.println("- [MAP]");
+    public boolean hasPotion() {
+        for (String item : items) {
+            if (item.equalsIgnoreCase("Potion"))
+                return true;
+        }
+        return false;
     }
-    System.out.println("- [" + potions + "] Potion(s)");
-    System.out.println("- [" + apples + "] Apple(s)");
-    System.out.println("-----------------");
-}
+
+    public void removePotion() {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).equalsIgnoreCase("Potion")) {
+                items.remove(i);
+                return;
+            }
+        }
+    }
+
+    public void addMultipleItems(String itemName, int count) {
+        for (int i = 0; i < count; i++) {
+            items.add(itemName);
+        }
+    }
 }

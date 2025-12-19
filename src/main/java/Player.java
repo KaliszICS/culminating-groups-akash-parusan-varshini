@@ -1,5 +1,4 @@
 public class Player extends Character implements Saveable {
-    private int gold = 20;
     private Inventory inventory;
 
     // Overloaded constructors

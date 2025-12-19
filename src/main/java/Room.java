@@ -47,28 +47,28 @@ public class Room {
     }
 
     public void display() {
-        // 1. Display the Room Header
         System.out.println("========================================");
         System.out.println(name.toUpperCase());
         System.out.println("========================================");
-
-        // 2. Display Description and ASCII Art
         System.out.println(description + "\n");
-        for (String line : art) {
-            System.out.println(line);
+
+        if (art != null) {
+            for (String line : art) {
+                System.out.println(line);
+            }
         }
 
-        // 3. Display the Exits (using the keys from the HashMap)
         System.out.println("\nExits: " + exits.keySet());
 
-        // 4. Clean Command List (Removed <dir> and restored original style)
-        System.out.print("Commands: go <up|down|left|right>, attack, inventory, help, quit");
-
-        // 5. Special condition for Chest Room commands
-        if (name.equals("Abandoned Storage")) {
-            System.out.print(", open chest");
+        // Check if we are in the Tavern to add the extra command
+        String commands = "go <up|down|left|right>, attack, inventory, help, quit";
+        if (name.equals("The Lucky Tavern")) {
+            commands += ", gamble";
+        } else if (name.equals("Abandoned Storage")) {
+            commands += ", open chest";
         }
 
-        System.out.println("\n========================================");
+        System.out.println("Commands: " + commands);
+        System.out.println("========================================");
     }
 }

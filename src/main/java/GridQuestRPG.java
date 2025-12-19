@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GridQuestRPG {
-
     private static Scanner input = new Scanner(System.in);
     private static ArrayList<Room> map = new ArrayList<>();
     private static Player player;
@@ -70,77 +69,30 @@ public class GridQuestRPG {
     // ================= WORLD =================
 
     private static void createWorld() {
-        // Room 0 — Forest Clearing (ALIEN RESTORED + KNIGHT)
-        Room r0 = new Room("Forest Clearing", "Trees close in around you...\nA strange presence looms ahead...");
-        r0.setArt(new String[] {
-                "############################",
-                "##  ▒▒▄▀▀▀▀▀▄▒▒▒▒▒▄▄▄▄▄▒▒  ##",
-                "##  ▒▐░▄░░░▄░▌▒▒▄█▄█▄█▄█▄▒ ##",
-                "##  ▒▐░▀▀░▀▀░▌▒▒▒▒▒░░░▒▒▒▒ ##",
-                "##  ▒▒▀▄░═░▄▀▒▒▒▒▒▒░░░▒▒▒▒ ##", 
-                "##  ▒▒▐░▀▄▀░▌▒▒▒▒▒▒░░░▒▒▒▒ ##", 
-                "##           (O)           ##",
-                "##          /|#|\\         ##",
-                "##           / \\          ##",
-                "############################"
-        });
+        Room r0 = new Room("Forest Clearing", "Trees close in around you...");
+        r0.setArt(loadArtFromFile("forest_art.txt"));
         r0.setEnemy(new Enemy("Goblin", 40, 10));
         r0.addExit("right", 1);
         map.add(r0);
 
-        // Room 1 — Town Square (Castle)
-        Room r1 = new Room("Town Square", "The heart of the town.");
-        r1.setArt(new String[] {
-                "                                                          |>>>",
-                "                   _                      _                |",
-                "    ____________ .' '.    _____/----/-\\ .' './========\\   / \\",
-                "   //// ////// /V_.-._\\  |.-.-.|===| _ |-----| u    u |  /___\\",
-                "  // /// // ///==\\ u |.  || | ||===||||| |T| |   ||   | .| u |_ _ _ _ _ _",
-                " ///////-\\////====\\==|:::::::::::::::::::::::::::::::::::|u u| U U U U U",
-                " |----/\\u |--|++++|..|'''''''''''::::::::::::::''''''''''|+++|+-+-+-+-+-+",
-                " |u u|u | |u ||||||..|              '::::::::'           |===|>=== _ _ ==",
-                " |===|  |u|==|++++|==|              .::::::::.           | T |....| V |..",
-                " |u u|u | |u ||HH||         \\|/    .::::::::::.",
-                " |===|_.|u|_.|+HH+|_              .::::::::::::.              _",
-                "                __(_)___         .::::::::::::::.         ___(_)__",
-                "---------------/  / \\  /|       .:::::;;;:::;;:::.       |\\  / \\  \\-------",
-                "______________/_______/ |      .::::::;;:::::;;:::.      | \\_______\\________",
-                "|       |     [===  =] /|     .:::::;;;::::::;;;:::.     |\\ [==  = ]   |",
-                "|_______|_____[ = == ]/ |    .:::::;;;:::::::;;;::::.    | \\ [ ===  ]___|____",
-                "     |       |[  === ] /|   .:::::;;;::::::::;;;:::::.   |\\ [=  ===] |",
-                "_____|_______|[== = =]/ |  .:::::;;;::::::::::;;;:::::.  | \\ [ ==  =]_|______",
-                " |       |    [ == = ] /| .::::::;;:::::::::::;;;::::::. |\\ [== == ]      |",
-                "_|_______|____[=  == ]/ |.::::::;;:::::::::::::;;;::::::.| \\ [  === ]______|_",
-                "   |       |  [ === =] /.::::::;;::::::::::::::;;;:::::::.\\ [===  =]   |",
-                "___|_______|__[ == ==]/.::::::;;;:::::::::::::::;;;:::::::.\\[=  == ]___|_____",
-                "                             [     (O)     ]                                 ",
-                "                             [    /|#|\\    ]                                 ",
-                "                             [     / \\     ]                                 "
-        });
-        r1.addExit("left", 0);
+        // Room 1: Town Square
+        Room r1 = new Room("Town Square", "The town center. Left: Tavern, Right: Storage.");
+        r1.setArt(loadArtFromFile("town_art.txt"));
         r1.addExit("right", 2);
+        r1.addExit("left", 3);
         map.add(r1);
 
-        // Room 2 — Abandoned Storage (Chest)
+        // Room 2: Storage
         Room r2 = new Room("Abandoned Storage", "A quiet room with a single chest.");
-        r2.setArt(new String[] {
-                "      ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓",
-                "      ▓▓░░▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓░░██",
-                "      ▓▓░░▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓░░██",
-                "      ▓▓░░▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓░░██",
-                "      ▓▓░░▓▓▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▓▓░░██",
-                "      ▓▓░░▓▓▓▓▓▓▓▓░░░░▓▓▓▓▓▓▓▓▓▓░░██",
-                "    ▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒",
-                "  ▒▒▒▒▓▓▒▒▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▒▒▓▓▒▒▒▒",
-                "  ▒▒▒▒▓▓░░▓▓▒▒▒▒▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▓▓░░▓▓▒▒▒▒",
-                "  ▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒",
-                "                                      ",
-                "                   (O)                  ",
-                "                  /|#|\\                 ",
-                "                   / \\                  "
-        });
+        r2.setArt(loadArtFromFile("storage_art.txt"));
         r2.addExit("left", 1);
         map.add(r2);
+
+        // Room 3: The Lucky Tavern
+        Room r3 = new Room("The Lucky Tavern", "Smells of old wood. Type 'gamble' to play.");
+        r3.setArt(loadArtFromFile("arcade_art.txt"));
+        r3.addExit("right", 1);
+        map.add(r3);
     }
 
     private static void loadRiddles() {
@@ -269,26 +221,35 @@ public class GridQuestRPG {
                 }
                 continue;
             }
-
+            if (cmd.equals("gamble")) {
+                if (room.getName().contains("Arcade") || room.getName().contains("Tavern")) {
+                    playGamble();
+                } else {
+                    System.out.println("No gambling equipment here.");
+                }
+                redraw = true;
+                continue;
+            }
             if (cmd.startsWith("go ")) {
                 String dir = cmd.substring(3).trim();
 
-                if (dir.equals("up") || dir.equals("down") || dir.equals("left") || dir.equals("right")) {
-                    if (dir.equals("left") && !room.getName().equals("Abandoned Storage")) {
-                        System.out.println("You can't go that way.");
-                    } else if (room.hasEnemy()) {
-                        System.out.println("The enemy blocks the way! You must fight or run.");
-                    } else {
-                        int next = room.getExit(dir);
-                        if (next >= 0) {
-                            currentRoom = next;
-                            redraw = true;
-                        } else {
-                            System.out.println("You can't go that way.");
-                        }
-                    }
-                } else {
+                if (!dir.equals("up") && !dir.equals("down") && !dir.equals("left") && !dir.equals("right")) {
                     System.out.println("Invalid direction! Use: go <up|down|left|right>");
+                    continue;
+                }
+
+                if (room.hasEnemy()) {
+                    System.out.println("The enemy blocks the way! You must fight or run.");
+                }
+
+                else {
+                    int nextRoomIndex = room.getExit(dir);
+                    if (nextRoomIndex >= 0) {
+                        currentRoom = nextRoomIndex;
+                        redraw = true;
+                    } else {
+                        System.out.println("You can't go that way.");
+                    }
                 }
                 continue;
             }
@@ -356,7 +317,7 @@ public class GridQuestRPG {
                 }
             } else if (choice.equals("3")) {
                 System.out.println("\nYou managed to escape safely!");
-                Utils.pause(); // Press ENTER before returning to loop
+                Utils.pause();
                 return 1;
             } else {
                 System.out.println("\nInvalid choice! Please choose 1, 2, or 3.");
@@ -385,7 +346,6 @@ public class GridQuestRPG {
     // ================= UI =================
 
     private static String healthBar(int hp, int max) {
-        // This math converts health to a percentage of the 20-character bar
         int filled = (int) (((double) hp / max) * 20);
         String bar = "";
         for (int i = 0; i < 20; i++) {
@@ -394,5 +354,62 @@ public class GridQuestRPG {
         return "[" + bar + "] " + hp + "/" + max;
     }
 
-    
+    private static String[] loadArtFromFile(String fileName) {
+        ArrayList<String> lines = new ArrayList<>();
+        java.io.File file = new java.io.File(fileName);
+
+        if (!file.exists()) {
+            return new String[] { " [ ERROR ] File not found: " + fileName };
+        }
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                lines.add(fileScanner.nextLine());
+            }
+        } catch (Exception e) {
+            return new String[] { " [ ERROR ] Could not read file: " + fileName };
+        }
+        return lines.toArray(new String[0]);
+    }
+
+    private static void playGamble() {
+        if (!player.getInventory().hasPotion()) {
+            System.out.println("You need at least 1 Potion to gamble!");
+            System.out.println("Press Enter to continue...");
+            input.nextLine();
+            return;
+        }
+
+        System.out.println("The dealer eyes your bag. He smirks, asking 'Will you wager 1 potion for a chance at 2?' (y/n)");
+        if (input.nextLine().equalsIgnoreCase("y")) {
+            playGamble(1); 
+        }
+    }
+
+    private static void playGamble(int wager) {
+        int cur = (int) (Math.random() * 10) + 1;
+        int next = (int) (Math.random() * 10) + 1;
+
+        System.out.println("\nDealer shows: [" + cur + "]. Next card Higher or Lower? (h/l)");
+        String choice = input.nextLine().toLowerCase().trim();
+
+        if ((choice.equals("h") && next >= cur) || (choice.equals("l") && next <= cur)) {
+            System.out.println("Win! Card was " + next + ". Total: " + (wager * 2) + " potions.");
+            System.out.println("Double or nothing? (y/n)");
+
+            if (input.nextLine().equalsIgnoreCase("y")) {
+                playGamble(wager * 2);
+            } else {
+                player.getInventory().addMultipleItems("Potion", (wager * 2) - 1);
+                System.out.println("Winnings added. Press Enter to continue...");
+                input.nextLine();
+            }
+        } else {
+            System.out.println("Loss! Card was " + next + ". Wager lost.");
+            player.getInventory().removePotion();
+
+            System.out.println("\nPress Enter to return to the Tavern...");
+            input.nextLine();
+        }
+    }
 }
