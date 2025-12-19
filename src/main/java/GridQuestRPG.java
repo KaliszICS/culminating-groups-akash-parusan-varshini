@@ -9,6 +9,7 @@ public class GridQuestRPG {
     private static int currentRoom = 0;
     private static ArrayList<Riddle> riddles = new ArrayList<>();
     private static boolean chestOpened = false;
+    private static WorldMap worldMap = new WorldMap();
 
     public static void main(String[] args) {
         player = new Player();
@@ -139,7 +140,7 @@ public class GridQuestRPG {
             if (cmd.equals("inventory") || cmd.equals("i") || cmd.equals("items")) {
                 Utils.clear();
                 player.getInventory().display();
-                System.out.println("\nActions: [1] Potion  [2] Apple  [3] Back");
+                System.out.println("\nActions: [1] Potion [2] Apple [3] Organize Bag [4] Search [5] Back");
                 System.out.print("> ");
                 String invCmd = input.nextLine().trim();
 
@@ -161,11 +162,24 @@ public class GridQuestRPG {
                         System.out.println("\nYou don't have any Apples!");
                     }
                     Utils.pause();
+                } else if (invCmd.equals("3")) {
+                    player.getInventory().selectionSort();
+                    System.out.println("\nInventory organized alphabetically!");
+                    Utils.pause();
+                } else if (invCmd.equals("4")) {
+                    System.out.print("\nEnter item name to find: ");
+                    String find = input.nextLine();
+                    int index = player.getInventory().sequentialSearch(find);
+                    if (index != -1) {
+                        System.out.println("'" + find + "' found in backpack slot " + (index + 1) + ".");
+                    } else {
+                        System.out.println("Item not found in your inventory.");
+                    }
+                    Utils.pause();
                 }
                 redraw = true;
                 continue;
             }
-
             if ((cmd.equals("open chest") || cmd.equals("open") || cmd.equals("chest"))
                     && room.getName().equals("Abandoned Storage")) {
                 if (chestOpened) {
@@ -221,6 +235,31 @@ public class GridQuestRPG {
                 }
                 continue;
             }
+
+            if (cmd.equals("save")) {
+                SaveManager.saveGame(currentRoom, player.getHealth(), player.getInventory());
+                redraw = true;
+                continue;
+            }
+
+            if (cmd.equals("load")) {
+                int[] data = SaveManager.loadGame(player.getInventory());
+                if (data != null) {
+                    currentRoom = data[0];
+                    player.setHealth(data[1]);
+                }
+                redraw = true;
+                continue;
+            }
+
+            if (cmd.equals("map")) {
+                Utils.clear();
+                worldMap.display(currentRoom);
+                Utils.pause();
+                redraw = true;
+                continue;
+            }
+
             if (cmd.equals("gamble")) {
                 if (room.getName().contains("Arcade") || room.getName().contains("Tavern")) {
                     playGamble();
@@ -233,15 +272,28 @@ public class GridQuestRPG {
             if (cmd.startsWith("go ")) {
                 String dir = cmd.substring(3).trim();
 
+                // 1. Validate direction
                 if (!dir.equals("up") && !dir.equals("down") && !dir.equals("left") && !dir.equals("right")) {
                     System.out.println("Invalid direction! Use: go <up|down|left|right>");
                     continue;
                 }
 
+                // 2. Battle Lock: Blocks movement if enemy is alive
                 if (room.hasEnemy()) {
                     System.out.println("The enemy blocks the way! You must fight or run.");
                 }
 
+                // 3. ADD THIS: Forest Safety Lock
+                // Inside your "go" command logic
+                else if (room.getName().equals("Town Square") && dir.equals("down")) {
+                    System.out.println("\n[!] The path back to the forest looks dark and unsafe.");
+                    System.out.println("The wizard's voice echoes: 'It is better to stay in the light of the town.'");
+
+                    Utils.pause(); // Wait for ENTER
+                    redraw = true; // This tells the loop to clear and reprint the Town Square art
+                }
+
+                // 4. Normal Movement
                 else {
                     int nextRoomIndex = room.getExit(dir);
                     if (nextRoomIndex >= 0) {
@@ -380,9 +432,10 @@ public class GridQuestRPG {
             return;
         }
 
-        System.out.println("The dealer eyes your bag. He smirks, asking 'Will you wager 1 potion for a chance at 2?' (y/n)");
+        System.out.println(
+                "The dealer eyes your bag. He smirks, asking 'Will you wager 1 potion for a chance at 2?' (y/n)");
         if (input.nextLine().equalsIgnoreCase("y")) {
-            playGamble(1); 
+            playGamble(1);
         }
     }
 

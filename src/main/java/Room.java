@@ -60,8 +60,7 @@ public class Room {
 
         System.out.println("\nExits: " + exits.keySet());
 
-        // Check if we are in the Tavern to add the extra command
-        String commands = "go <up|down|left|right>, attack, inventory, help, quit";
+        String commands = "go <up|down|left|right>, attack, inventory, map, save, load, help, quit";
         if (name.equals("The Lucky Tavern")) {
             commands += ", gamble";
         } else if (name.equals("Abandoned Storage")) {

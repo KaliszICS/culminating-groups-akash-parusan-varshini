@@ -3,20 +3,23 @@ import java.util.ArrayList;
 public class Inventory {
 
     private ArrayList<String> items;
+    private ArrayList<String> order;
 
     public Inventory() {
         items = new ArrayList<>();
-        items.add("Map");
-        items.add("Potion"); // Player starts with 1 Potion
-        // No Apple here; it must be found in the chest!
+        order = new ArrayList<>();
+        
+        items.add("Potion");
+        
+        order.add("Potion");
+        order.add("Apple");
     }
 
-    // This method removes an item by name after it's been used
     private void removeItem(String target) {
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).equalsIgnoreCase(target)) {
                 items.remove(i);
-                break; // Stop after removing one instance
+                break;
             }
         }
     }
@@ -53,49 +56,57 @@ public class Inventory {
     }
 
     public void display() {
-        int potions = 0;
-        int apples = 0;
-        boolean hasMap = false;
-
-        // Count items for explicit display
-        for (String item : items) {
-            if (item.equalsIgnoreCase("Potion"))
-                potions++;
-            else if (item.equalsIgnoreCase("Apple"))
-                apples++;
-            else if (item.equalsIgnoreCase("Map"))
-                hasMap = true;
-        }
-
         System.out.println("\n--- INVENTORY ---");
-        if (hasMap) {
-            System.out.println("- [MAP]");
+        for (String name : order) {
+            int count = 0;
+            for (String item : items) {
+                if (item.equalsIgnoreCase(name)) {
+                    count++;
+                }
+            }
+            System.out.println("- [" + count + "] " + name + "(s)");
         }
-        System.out.println("- [" + potions + "] Potion(s)");
-        System.out.println("- [" + apples + "] Apple(s)");
         System.out.println("-----------------");
     }
 
     public boolean hasPotion() {
-        for (String item : items) {
-            if (item.equalsIgnoreCase("Potion"))
-                return true;
-        }
-        return false;
+        return contains("Potion");
     }
 
     public void removePotion() {
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).equalsIgnoreCase("Potion")) {
-                items.remove(i);
-                return;
-            }
-        }
+        removeItem("Potion");
     }
 
     public void addMultipleItems(String itemName, int count) {
         for (int i = 0; i < count; i++) {
             items.add(itemName);
         }
+    }
+
+    public ArrayList<String> getItems() {
+        return items;
+    }
+
+    public void selectionSort() {
+        for (int i = 0; i < order.size() - 1; i++) {
+            int minIdx = i;
+            for (int j = i + 1; j < order.size(); j++) {
+                if (order.get(j).compareToIgnoreCase(order.get(minIdx)) < 0) {
+                    minIdx = j;
+                }
+            }
+            String temp = order.get(minIdx);
+            order.set(minIdx, order.get(i));
+            order.set(i, temp);
+        }
+    }
+
+    public int sequentialSearch(String target) {
+        for (int i = 0; i < order.size(); i++) {
+            if (order.get(i).equalsIgnoreCase(target)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

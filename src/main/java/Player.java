@@ -25,4 +25,8 @@ public class Player extends Character implements Saveable {
     public String saveData() {
         return health + "," + attack;
     }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
 }

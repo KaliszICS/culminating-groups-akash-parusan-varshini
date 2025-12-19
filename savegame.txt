@@ -1,0 +1,9 @@
+1
+100
+Map
+Potion
+Potion
+Apple
+Potion
+Potion
+Potion

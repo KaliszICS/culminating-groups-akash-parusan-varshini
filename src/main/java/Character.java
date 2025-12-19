@@ -19,7 +19,6 @@ public abstract class Character {
         if (health < 0) health = 0;
     }
 
-    // This handles the +25 heal and the 100 cap properly
     public void heal(int amount) {
         health += amount;
         if (health > MAX_HEALTH) {
