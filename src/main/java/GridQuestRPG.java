@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 import java.util.Scanner;
 
 public class GridQuestRPG {
@@ -82,7 +83,7 @@ public class GridQuestRPG {
         r1.setArt(loadArtFromFile("town_art.txt"));
         r1.addExit("right", 2);
         r1.addExit("left", 3);
-        r1.addExit("up", 4); 
+        r1.addExit("up", 4);
         map.add(r1);
 
         // Room 2: Storage
@@ -125,23 +126,6 @@ public class GridQuestRPG {
 
         while (true) {
             Room room = map.get(currentRoom);
-
-            // BOSS TRIGGER: Forgotten Road
-            if (room.getName().equals("The Forgotten Road") && room.hasEnemy()) {
-                int result = battle(player, room.getEnemy());
-
-                if (result == -1) {
-                    System.out.println("GAME OVER.");
-                    return;
-                }
-
-                if (result == 0) {
-                    room.defeatEnemy();
-                    System.out.println("\nThe road falls silent. You may proceed.");
-                    Utils.pause();
-                    redraw = true;
-                }
-            }
 
             if (redraw) {
                 Utils.clear();
@@ -239,7 +223,7 @@ public class GridQuestRPG {
             if (cmd.equals("attack")) {
                 if (room.hasEnemy()) {
                     Enemy enemy = room.getEnemy();
-                    int result = battle(player, enemy);
+                    int result = BattleSystem.fight(player, enemy, input);
 
                     if (result == 1) {
                         if (currentRoom == 0) {
@@ -263,7 +247,7 @@ public class GridQuestRPG {
                     if (result == 0) {
                         room.defeatEnemy();
 
-                        if (currentRoom == 0) { 
+                        if (currentRoom == 0) {
                             System.out.println("\nVictory! The path is clear.");
                             Utils.pause();
 
@@ -323,16 +307,21 @@ public class GridQuestRPG {
                 if (room.getName().equals("The Forgotten Road") && dir.equals("up")) {
 
                     if (sentinelDefeated) {
-                        System.out.println("\nThe Sentinel has been defeated.");
+                        System.out.println("\nThe Sentinel has already been defeated.");
                         System.out.println("Only silence remains beyond the fog.");
                         Utils.pause();
                         redraw = true;
                         continue;
                     }
 
-                    sentinelBossBattle(player);
-                    redraw = true;
+                    boolean won = sentinelBossBattle(player);
+
+                    if (won) {
+                        sentinelDefeated = true;
+                        redraw = true;
+                    }
                     continue;
+
                 }
 
                 if (!dir.equals("up") && !dir.equals("down") && !dir.equals("left") && !dir.equals("right")) {
@@ -368,106 +357,7 @@ public class GridQuestRPG {
         }
     }
 
-    // ================= BATTLE =================
-    private static int battle(Player player, Enemy enemy) {
-        Scanner battleInput = new Scanner(System.in);
-
-        while (player.isAlive() && enemy.isAlive()) {
-            Utils.clear();
-            System.out.println("========================================");
-            System.out.println("                BATTLE");
-            System.out.println("========================================");
-
-            System.out.println("Player HP: " + healthBar(player.getHealth(), 100));
-            System.out.println("Enemy  HP: " + healthBar(enemy.getHealth(), 40));
-
-            System.out.println("\nChoose an action:");
-            System.out.println("[1] Attack");
-            System.out.println("[2] Use Item");
-            System.out.println("[3] Run");
-
-            System.out.print("> ");
-            String choice = battleInput.nextLine().toLowerCase().trim();
-
-            boolean turnConsumed = false;
-
-            if (choice.equals("1")) {
-                System.out.println("\nYou attack for " + player.attack + " damage!");
-                enemy.takeDamage(player.attack);
-                turnConsumed = true;
-            } else if (choice.equals("2")) {
-                if (player.getHealth() >= 100) {
-                    System.out.println("\nAlready at max health (100/100)!");
-                    Utils.pause();
-                    continue;
-                }
-
-                player.getInventory().display();
-                System.out.println("\nWhat will you use?");
-                System.out.println("[1] Potion  [2] Apple  [3] Back");
-                System.out.print("> ");
-                String itemChoice = battleInput.nextLine().trim();
-
-                if (itemChoice.equals("1")) {
-                    if (player.getInventory().usePotion(player)) {
-                        System.out.println("\nSuccess: You drank a Potion!");
-                        System.out.println("Health restored to: " + player.getHealth() + "/100");
-                        Utils.pause(); 
-                    } else {
-                        System.out.println("\nYou don't have any Potions!");
-                        Utils.pause();
-                        continue;
-                    }
-                } else if (itemChoice.equals("2")) {
-                    if (player.getInventory().useApple(player)) {
-                        System.out.println("\nSuccess: You ate an Apple!");
-                        System.out.println("Health restored to: " + player.getHealth() + "/100");
-                        Utils.pause();
-                    } else {
-                        System.out.println("\nYou don't have any Apples!");
-                        Utils.pause();
-                        continue;
-                    }
-                }
-
-            } else if (choice.equals("3")) {
-                System.out.println("\nYou managed to escape safely!");
-                Utils.pause();
-                return 1;
-            } else {
-                System.out.println("\nInvalid choice! Please choose 1, 2, or 3.");
-                Utils.pause();
-                continue;
-            }
-
-            if (turnConsumed) {
-                Utils.pause();
-
-                if (enemy.isAlive()) {
-                    System.out.println("\nThe " + enemy.getName() + " attacks for " + enemy.attack + " damage!");
-                    player.takeDamage(enemy.attack);
-
-                    if (!player.isAlive()) {
-                        return -1;
-                    }
-                    Utils.pause();
-                } else {
-                    return 0;
-                }
-            }
-        }
-        return -1;
-    }
     // ================= UI =================
-
-    private static String healthBar(int hp, int max) {
-        int filled = (int) (((double) hp / max) * 20);
-        String bar = "";
-        for (int i = 0; i < 20; i++) {
-            bar += (i < filled) ? "#" : "-";
-        }
-        return "[" + bar + "] " + hp + "/" + max;
-    }
 
     private static String[] loadArtFromFile(String fileName) {
         ArrayList<String> lines = new ArrayList<>();
@@ -529,47 +419,55 @@ public class GridQuestRPG {
         }
     }
 
-    public static void sentinelBossBattle(Player player) {
-        java.util.Random rand = new java.util.Random();
-
+    public static boolean sentinelBossBattle(Player player) {
         Utils.clear();
-
-        String[] introArt = loadArtFromFile("sentinel_road_intro.txt");
-        for (String line : introArt) {
+        String[] castleArt = loadArtFromFile("sentinel_road_intro.txt");
+        for (String line : castleArt) {
             System.out.println(line);
         }
-        Utils.pause();
 
+        Utils.pause(); // Press ENTER after castle
+
+        Random rand = new Random();
+
+        // DO NOT clear here – old behavior kept the text flowing
+
+        // Intro narration
         try {
+            Thread.sleep(1000);
             System.out.println("The road narrows. The air turns heavy...");
             Thread.sleep(1000);
             System.out.println("Iron footsteps echo ahead.");
             Thread.sleep(1000);
             System.out.println("A towering figure emerges from the fog.");
             Thread.sleep(1000);
-            System.out.println("Behind it, the silhouette of a ruined castle looms, fused with iron and stone.");
+            System.out.println("Behind it, the silhouette of a ruined castle looms.");
             Thread.sleep(1000);
             System.out.println("\nTHE SENTINEL: \"Glass breaks. Iron remains.\"");
             Thread.sleep(1000);
-            System.out.println("\n[1] Draw your weapon");
-            System.out.println("[2] Retreat to the road");
-            System.out.print("> ");
-
-            String choice = input.nextLine().trim();
-
-            if (choice.equals("2")) {
-                System.out.println("\nYou step back as the fog swallows the figure once more...");
-                Utils.pause();
-                return;
-            }
         } catch (InterruptedException e) {
         }
+
+        // ================= NEW PART (THIS WAS MISSING) =================
+        System.out.println("\n[1] Draw your weapon");
+        System.out.println("[2] Retreat to the road");
+        System.out.print("> ");
+
+        String preChoice = input.nextLine().trim();
+
+        if (preChoice.equals("2")) {
+            System.out.println("\nYou step back as the fog swallows the figure once more...");
+            Utils.pause();
+            return false; // EXIT BOSS, go back to road
+        }
+        // ===============================================================
 
         int bossHP = 150;
         boolean armorCracked = false;
 
         while (bossHP > 0 && player.getHealth() > 0) {
             Utils.clear();
+
             System.out.println("========================================");
             System.out.println("           BOSS: THE SENTINEL");
             System.out.println("========================================");
@@ -577,53 +475,48 @@ public class GridQuestRPG {
             System.out.println("Your HP    : " + player.getHealth() + "/100");
             System.out.println("\n[1] Attack");
             System.out.println("[2] Use Item");
-
             System.out.print("> ");
-            String choice = input.nextLine();
 
+            String choice = input.nextLine().trim();
+
+            // ---------- PLAYER TURN ----------
             if (choice.equals("1")) {
-                int pDamage = rand.nextInt(16) + 15;
+                int pDamage = rand.nextInt(16) + 15; // 15–30 dmg
                 bossHP -= pDamage;
                 System.out.println("\nYou strike the Sentinel for " + pDamage + "!");
+                Utils.pause();
+
             } else if (choice.equals("2")) {
-                if (player.getHealth() >= 100) {
-                    System.out.println("\nAlready at max health (100/100)!");
-                    Utils.pause();
-                    continue;
-                }
 
                 player.getInventory().display();
                 System.out.println("\n[1] Potion  [2] Apple  [3] Back");
                 System.out.print("> ");
                 String itemChoice = input.nextLine().trim();
+
                 if (itemChoice.equals("3")) {
                     continue;
                 }
 
                 if (itemChoice.equals("1")) {
                     if (player.getInventory().usePotion(player)) {
-                        System.out.println("\nSuccess: You drank a Potion!");
+                        System.out.println("\nYou drink a Potion.");
                         System.out.println("Health restored to: " + player.getHealth() + "/100");
-                        Utils.pause();
                     } else {
-                        System.out.println("\nYou don't have any Potions!");
-                        Utils.pause();
-                        continue;
+                        System.out.println("\nYou have no Potions!");
                     }
                 } else if (itemChoice.equals("2")) {
                     if (player.getInventory().useApple(player)) {
-                        System.out.println("\nSuccess: You ate an Apple!");
+                        System.out.println("\nYou eat an Apple.");
                         System.out.println("Health restored to: " + player.getHealth() + "/100");
-                        Utils.pause();
                     } else {
-                        System.out.println("\nYou don't have any Apples!");
-                        Utils.pause();
-                        continue;
+                        System.out.println("\nYou have no Apples!");
                     }
                 }
 
+                Utils.pause();
             }
 
+            // ---------- SENTINEL TURN ----------
             if (bossHP > 0) {
                 try {
                     Thread.sleep(1000);
@@ -631,29 +524,28 @@ public class GridQuestRPG {
                     int sDamage;
 
                     if (bossHP <= 50) {
-
                         if (!armorCracked) {
                             System.out.println("\nCracks form in the Sentinel's armor...");
                             armorCracked = true;
+                            Thread.sleep(1000);
                         }
-
-                        sDamage = rand.nextInt(10) + 10; // 10–19 dmg (weakened)
+                        sDamage = rand.nextInt(10) + 10; // 10–19 dmg
                     } else {
-                        sDamage = rand.nextInt(16) + 10; // 10–25 dmg (normal)
+                        sDamage = rand.nextInt(16) + 10; // 10–25 dmg
                     }
 
                     player.takeDamage(sDamage);
                     System.out.println("\nThe Sentinel smashes you for " + sDamage + "!");
                     Thread.sleep(1000);
-                    System.out.println("\n[ Press ENTER to continue ]");
+                    System.out.println("[ Press ENTER to continue ]");
                     input.nextLine();
 
                 } catch (InterruptedException e) {
                 }
             }
-
         }
 
+        // ---------- ENDING ----------
         if (player.getHealth() > 0) {
             try {
                 Thread.sleep(1000);
@@ -669,102 +561,36 @@ public class GridQuestRPG {
                 input.nextLine();
             } catch (InterruptedException e) {
             }
-
-            sentinelDefeated = true; 
         } else {
             System.out.println("\nYOU HAVE FALLEN.");
             System.exit(0);
         }
-
+        return true;
     }
 
-    public static boolean checkSpecialEvents(Player player, Scanner scanner) {
+    private static void playCastleEpilogue() {
         Utils.clear();
-        System.out.println("\n--- THE IRON GATES ---");
-        System.out.println("The Sentinel looms over the path to The Forgotten Road.");
-        System.out.println("\n[1] Draw Weapon (Fight)");
-        System.out.println("[2] Retreat (Go Back)");
 
-        System.out.print("> ");
-        String choice = scanner.nextLine();
-
-        if (choice.equals("1")) {
-            bossBattle(player);
-            sentinelDefeated = true;
-            currentRoom = 4; 
-            player.setX(0);
-            player.setY(1);
-            System.out.println("\nThe Sentinel shatters. You proceed to The Forgotten Road.");
-            Utils.pause();
-            return true;
-        } else {
-            System.out.println("\nYou retreat to the center of the Town Square.");
-            Utils.pause();
-            return true;
+        String[] castleArt = loadArtFromFile("sentinel_road_intro.txt");
+        for (String line : castleArt) {
+            System.out.println(line);
         }
-    }
 
-    public static void bossBattle(Player player) {
-        java.util.Random rand = new java.util.Random();
-
-        Utils.clear();
+        Utils.pause();
 
         try {
-            System.out.println("The iron gates groan as they loom over you...");
+            System.out.println("Iron and stone stand silent.");
             Thread.sleep(1000);
-            System.out.println("THE SENTINEL: 'Glass breaks. Iron remains.'");
+            System.out.println("The Sentinel lies shattered at your feet.");
             Thread.sleep(1000);
-            System.out.println("\n--- BOSS CHALLENGE: THE SENTINEL ---");
+            System.out.println("Beyond the gates, the world breathes again.");
             Thread.sleep(1000);
-            System.out.println("[ Press ENTER to Draw Your Weapon ]");
-            input.nextLine();
         } catch (InterruptedException e) {
         }
 
-        int bossHP = 150;
-        boolean armorCracked = false;
-
-        while (bossHP > 0 && player.getHealth() > 0) {
-            Utils.clear();
-            System.out.println("=== BOSS: THE SENTINEL ===");
-            System.out.println("SENTINEL HP: " + bossHP);
-            System.out.println("YOUR HP    : " + player.getHealth());
-            System.out.println("==========================");
-
-            System.out.print("\nAction (1: Attack, 2: Potion): ");
-            String move = input.nextLine();
-
-            if (move.equals("1")) {
-                int pDam = rand.nextInt(15) + 10;
-                bossHP -= pDam;
-                System.out.println("\n>> You strike for " + pDam + "!");
-            } else if (move.equals("2")) {
-                int healAmount = 35;
-                player.setHealth(player.getHealth() + healAmount);
-                System.out.println("\n>> You chug a potion! (+ " + healAmount + " HP)");
-            }
-
-            if (bossHP > 0) {
-                try {
-                    Thread.sleep(1000); 
-                    int bDam = rand.nextInt(12) + 15;
-                    player.setHealth(player.getHealth() - bDam);
-                    System.out.println(">> The Sentinel crushes you for " + bDam + "!");
-                    Thread.sleep(1000); 
-                    System.out.println("\n[ Press Enter to continue ]");
-                    input.nextLine();
-                } catch (InterruptedException e) {
-                }
-            }
-        }
-
-        if (player.getHealth() > 0) {
-            System.out.println("\nTHE SENTINEL: 'You... are iron.'");
-            System.out.println("The giant shatters into cold dust. The path is clear.");
-            Utils.pause();
-        } else {
-            System.out.println("\nYOU HAVE PERISHED.");
-            System.exit(0);
-        }
+        System.out.println("\nYou have beaten the RPG.");
+        System.out.println("But the world remains open — feel free to explore.");
+        Utils.pause();
     }
+
 }

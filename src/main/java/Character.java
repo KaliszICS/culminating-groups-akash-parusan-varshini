@@ -2,9 +2,10 @@ public abstract class Character {
 
     protected int health;
     protected int attack;
-    protected final int MAX_HEALTH = 100;
+    protected int maxHealth;
 
-    public abstract void takeTurn();
+    // Each subclass (Player, Enemy) MUST define how it takes a turn
+    public abstract void takeTurn(Player player);
 
     public boolean isAlive() {
         return health > 0;
@@ -14,15 +15,26 @@ public abstract class Character {
         return health;
     }
 
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
     public void takeDamage(int dmg) {
         health -= dmg;
-        if (health < 0) health = 0;
+        if (health < 0) {
+            health = 0;
+        }
     }
 
     public void heal(int amount) {
         health += amount;
-        if (health > MAX_HEALTH) {
-            health = MAX_HEALTH;
+        if (health > maxHealth) {
+            health = maxHealth;
         }
     }
+
+    public int getAttack() {
+        return attack;
+    }
+
 }

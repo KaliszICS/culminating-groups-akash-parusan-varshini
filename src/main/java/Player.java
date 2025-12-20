@@ -1,10 +1,13 @@
 public class Player extends Character implements Saveable {
     private Inventory inventory;
-    private int x = 1; 
+    private int x = 1;
     private int y = 1;
 
     public Player() {
-        this(100, 15);
+        this.maxHealth = 100;
+        this.health = 100;
+        this.attack = 15;
+        inventory = new Inventory();
     }
 
     public Player(int health, int attack) {
@@ -12,8 +15,9 @@ public class Player extends Character implements Saveable {
         this.attack = attack;
         inventory = new Inventory();
     }
+
     @Override
-    public void takeTurn() {
+    public void takeTurn(Player player) {
     }
 
     public Inventory getInventory() {
