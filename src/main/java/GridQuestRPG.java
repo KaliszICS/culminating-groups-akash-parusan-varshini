@@ -1,3 +1,4 @@
+
 // Classes
 // Main driver class that controls program flow and coordinates all other classes.
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class GridQuestRPG {
             }
 
             if (cmd.equals("save")) {
-                SaveManager.saveGame(currentRoom, player, player.getInventory());
+                SaveManager.saveGame(currentRoom, chestOpened, player, player.getInventory());
                 redraw = true;
                 continue;
             }
@@ -122,6 +123,7 @@ public class GridQuestRPG {
                 int[] data = SaveManager.loadGame(player);
                 if (data != null) {
                     currentRoom = data[0];
+                    chestOpened = data[1] == 1;
                 }
                 redraw = true;
                 continue;
@@ -164,6 +166,7 @@ public class GridQuestRPG {
                         sentinelDefeated = true;
                         redraw = true;
                     }
+                    redraw = true;
                     continue;
 
                 }

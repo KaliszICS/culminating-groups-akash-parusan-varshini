@@ -1,9 +1,14 @@
 1
+true
 100,15
-Map
 Potion
 Potion
 Apple
+Potion
+Potion
+Potion
+Potion
+Potion
 Potion
 Potion
 Potion

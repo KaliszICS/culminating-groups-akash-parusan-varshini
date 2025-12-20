@@ -1,8 +1,9 @@
+
 // Classes, Sorting (Selection), Searching (Sequential)
 // Manages items and implements selection sort and sequential search.
 import java.util.ArrayList;
 
-public class Inventory {
+public class Inventory implements Saveable {
 
     private ArrayList<String> items;
     private ArrayList<String> order;
@@ -10,9 +11,9 @@ public class Inventory {
     public Inventory() {
         items = new ArrayList<>();
         order = new ArrayList<>();
-        
+
         items.add("Potion");
-        
+
         order.add("Potion");
         order.add("Apple");
     }
@@ -111,4 +112,14 @@ public class Inventory {
         }
         return -1;
     }
+
+    @Override
+    public String saveData() {
+        StringBuilder sb = new StringBuilder();
+        for (String item : items) {
+            sb.append(item).append("\n");
+        }
+        return sb.toString();
+    }
+
 }
