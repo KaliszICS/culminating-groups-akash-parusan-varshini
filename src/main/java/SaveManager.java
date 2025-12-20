@@ -4,10 +4,10 @@ import java.util.Scanner;
 public class SaveManager {
     private static final String SAVE_FILE = "savegame.txt";
 
-    public static void saveGame(int currentRoom, int health, Inventory inventory) {
+    public static void saveGame(int currentRoom, Saveable entity, Inventory inventory) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(SAVE_FILE))) {
             writer.println(currentRoom);
-            writer.println(health);
+            writer.println(entity.saveData());
             for (String item : inventory.getItems()) {
                 writer.println(item);
             }
@@ -18,30 +18,34 @@ public class SaveManager {
         Utils.pause();
     }
 
-    public static int[] loadGame(Inventory inventory) {
-        File file = new File(SAVE_FILE);
-        if (!file.exists()) {
-            System.out.println("\nNo save file found.");
-            Utils.pause();
-            return null;
+    public static int[] loadGame(Player player) {
+    File file = new File(SAVE_FILE);
+    if (!file.exists()) {
+        System.out.println("\nNo save file found.");
+        Utils.pause();
+        return null;
+    }
+
+    try (Scanner reader = new Scanner(file)) {
+        int room = Integer.parseInt(reader.nextLine());
+        String[] stats = reader.nextLine().split(",");
+        int health = Integer.parseInt(stats[0]);
+        int attack = Integer.parseInt(stats[1]);
+
+        player.setHealth(health);
+        player.getInventory().getItems().clear();
+        while (reader.hasNextLine()) {
+            player.getInventory().addItem(reader.nextLine());
         }
 
-        try (Scanner reader = new Scanner(file)) {
-            int room = Integer.parseInt(reader.nextLine());
-            int hp = Integer.parseInt(reader.nextLine());
-            
-            inventory.getItems().clear();
-            while (reader.hasNextLine()) {
-                inventory.addItem(reader.nextLine());
-            }
-            
-            System.out.println("\nGame loaded successfully!");
-            Utils.pause();
-            return new int[]{room, hp};
-        } catch (Exception e) {
-            System.out.println("\nError loading save file.");
-            Utils.pause();
-            return null;
-        }
+        System.out.println("\nGame loaded successfully!");
+        Utils.pause();
+        return new int[] { room };
+
+    } catch (Exception e) {
+        System.out.println("\nError loading save file.");
+        Utils.pause();
+        return null;
     }
+}
 }

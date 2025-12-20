@@ -14,7 +14,6 @@ public class Player extends Character implements Saveable {
     }
     @Override
     public void takeTurn() {
-        // handled by user input
     }
 
     public Inventory getInventory() {

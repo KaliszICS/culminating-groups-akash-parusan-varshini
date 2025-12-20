@@ -82,7 +82,7 @@ public class GridQuestRPG {
         r1.setArt(loadArtFromFile("town_art.txt"));
         r1.addExit("right", 2);
         r1.addExit("left", 3);
-        r1.addExit("up", 4); // <--- ADD THIS EXIT
+        r1.addExit("up", 4); 
         map.add(r1);
 
         // Room 2: Storage
@@ -101,8 +101,8 @@ public class GridQuestRPG {
         Room r4 = new Room("The Forgotten Road",
                 "The path ahead is clear and silent. Something massive watches from beyond the fog.");
         r4.setArt(loadArtFromFile("road_art.txt"));
-        r4.addExit("down", 1); // back to Town Square
-        r4.addExit("up", -1); // boss gate (handled manually)
+        r4.addExit("down", 1);
+        r4.addExit("up", -1);
         map.add(r4);
     }
 
@@ -207,6 +207,8 @@ public class GridQuestRPG {
                 redraw = true;
                 continue;
             }
+
+            // 4. OPEN CHEST
             if ((cmd.equals("open chest") || cmd.equals("open") || cmd.equals("chest"))
                     && room.getName().equals("Abandoned Storage")) {
                 if (chestOpened) {
@@ -240,10 +242,9 @@ public class GridQuestRPG {
                     int result = battle(player, enemy);
 
                     if (result == 1) {
-                        // FIRST BATTLE → RUN STILL PROGRESSES STORY
-                        if (currentRoom == 0) { // Forest Clearing
-                            room.defeatEnemy(); // remove blocker anyway
-                            currentRoom = 1; // Town Square
+                        if (currentRoom == 0) {
+                            room.defeatEnemy();
+                            currentRoom = 1;
                             player.setX(1);
                             player.setY(1);
                             redraw = true;
@@ -262,12 +263,11 @@ public class GridQuestRPG {
                     if (result == 0) {
                         room.defeatEnemy();
 
-                        // FIRST BATTLE → AUTO PROGRESS TO TOWN SQUARE
-                        if (currentRoom == 0) { // Forest Clearing
+                        if (currentRoom == 0) { 
                             System.out.println("\nVictory! The path is clear.");
                             Utils.pause();
 
-                            currentRoom = 1; // Town Square
+                            currentRoom = 1;
                             player.setX(1);
                             player.setY(1);
                             redraw = true;
@@ -285,16 +285,15 @@ public class GridQuestRPG {
             }
 
             if (cmd.equals("save")) {
-                SaveManager.saveGame(currentRoom, player.getHealth(), player.getInventory());
+                SaveManager.saveGame(currentRoom, player, player.getInventory());
                 redraw = true;
                 continue;
             }
 
             if (cmd.equals("load")) {
-                int[] data = SaveManager.loadGame(player.getInventory());
+                int[] data = SaveManager.loadGame(player);
                 if (data != null) {
                     currentRoom = data[0];
-                    player.setHealth(data[1]);
                 }
                 redraw = true;
                 continue;
@@ -336,19 +335,16 @@ public class GridQuestRPG {
                     continue;
                 }
 
-                // 1. Validate direction
                 if (!dir.equals("up") && !dir.equals("down") && !dir.equals("left") && !dir.equals("right")) {
                     System.out.println("Invalid direction! Use: go <up|down|left|right>");
                     continue;
                 }
 
-                // 2. Enemy lock
                 if (room.hasEnemy()) {
                     System.out.println("The enemy blocks the way! You must fight or run.");
                     continue;
                 }
 
-                // 3. Town Square → Forest warning (THIS is what you want)
                 if (room.getName().equals("Town Square") && dir.equals("down")) {
                     System.out.println("\n[!] The path back to the forest looks dark and unsafe.");
                     System.out.println("The wizard's voice echoes: 'It is better to stay in the light of the town.'");
@@ -357,7 +353,6 @@ public class GridQuestRPG {
                     continue;
                 }
 
-                // 4. Normal movement
                 int nextRoomIndex = room.getExit(dir);
                 if (nextRoomIndex >= 0) {
                     currentRoom = nextRoomIndex;
@@ -417,7 +412,7 @@ public class GridQuestRPG {
                     if (player.getInventory().usePotion(player)) {
                         System.out.println("\nSuccess: You drank a Potion!");
                         System.out.println("Health restored to: " + player.getHealth() + "/100");
-                        Utils.pause(); // 👈 IMPORTANT
+                        Utils.pause(); 
                     } else {
                         System.out.println("\nYou don't have any Potions!");
                         Utils.pause();
@@ -427,7 +422,7 @@ public class GridQuestRPG {
                     if (player.getInventory().useApple(player)) {
                         System.out.println("\nSuccess: You ate an Apple!");
                         System.out.println("Health restored to: " + player.getHealth() + "/100");
-                        Utils.pause(); // 👈 IMPORTANT
+                        Utils.pause();
                     } else {
                         System.out.println("\nYou don't have any Apples!");
                         Utils.pause();
@@ -539,7 +534,6 @@ public class GridQuestRPG {
 
         Utils.clear();
 
-        // Display Sentinel approach art
         String[] introArt = loadArtFromFile("sentinel_road_intro.txt");
         for (String line : introArt) {
             System.out.println(line);
@@ -566,7 +560,7 @@ public class GridQuestRPG {
             if (choice.equals("2")) {
                 System.out.println("\nYou step back as the fog swallows the figure once more...");
                 Utils.pause();
-                return; // exits boss method, player stays on the road
+                return;
             }
         } catch (InterruptedException e) {
         }
@@ -588,7 +582,7 @@ public class GridQuestRPG {
             String choice = input.nextLine();
 
             if (choice.equals("1")) {
-                int pDamage = rand.nextInt(16) + 15; // 10–25
+                int pDamage = rand.nextInt(16) + 15;
                 bossHP -= pDamage;
                 System.out.println("\nYou strike the Sentinel for " + pDamage + "!");
             } else if (choice.equals("2")) {
@@ -603,14 +597,14 @@ public class GridQuestRPG {
                 System.out.print("> ");
                 String itemChoice = input.nextLine().trim();
                 if (itemChoice.equals("3")) {
-                    continue; // 👈 GOES BACK TO BOSS MENU, NO ATTACK
+                    continue;
                 }
 
                 if (itemChoice.equals("1")) {
                     if (player.getInventory().usePotion(player)) {
                         System.out.println("\nSuccess: You drank a Potion!");
                         System.out.println("Health restored to: " + player.getHealth() + "/100");
-                        Utils.pause(); // 👈 THIS is what was missing
+                        Utils.pause();
                     } else {
                         System.out.println("\nYou don't have any Potions!");
                         Utils.pause();
@@ -620,7 +614,7 @@ public class GridQuestRPG {
                     if (player.getInventory().useApple(player)) {
                         System.out.println("\nSuccess: You ate an Apple!");
                         System.out.println("Health restored to: " + player.getHealth() + "/100");
-                        Utils.pause(); // 👈 THIS is what was missing
+                        Utils.pause();
                     } else {
                         System.out.println("\nYou don't have any Apples!");
                         Utils.pause();
@@ -640,12 +634,12 @@ public class GridQuestRPG {
 
                         if (!armorCracked) {
                             System.out.println("\nCracks form in the Sentinel's armor...");
-                            armorCracked = true; // 👈 only happens once
+                            armorCracked = true;
                         }
 
-                        sDamage = rand.nextInt(10) + 10; // 10–19 (weakened)
+                        sDamage = rand.nextInt(10) + 10; // 10–19 dmg (weakened)
                     } else {
-                        sDamage = rand.nextInt(16) + 10; // 10–25 (normal)
+                        sDamage = rand.nextInt(16) + 10; // 10–25 dmg (normal)
                     }
 
                     player.takeDamage(sDamage);
@@ -676,7 +670,7 @@ public class GridQuestRPG {
             } catch (InterruptedException e) {
             }
 
-            sentinelDefeated = true; // 👈 IMPORTANT
+            sentinelDefeated = true; 
         } else {
             System.out.println("\nYOU HAVE FALLEN.");
             System.exit(0);
@@ -684,7 +678,6 @@ public class GridQuestRPG {
 
     }
 
-    // This goes OUTSIDE of main, but inside GridQuestRPG class
     public static boolean checkSpecialEvents(Player player, Scanner scanner) {
         Utils.clear();
         System.out.println("\n--- THE IRON GATES ---");
@@ -697,17 +690,15 @@ public class GridQuestRPG {
 
         if (choice.equals("1")) {
             bossBattle(player);
-            // If they survive bossBattle:
             sentinelDefeated = true;
-            currentRoom = 4; // Move them to Forgotten Road
-            player.setX(0); // Sync coordinates
+            currentRoom = 4; 
+            player.setX(0);
             player.setY(1);
             System.out.println("\nThe Sentinel shatters. You proceed to The Forgotten Road.");
             Utils.pause();
             return true;
         } else {
             System.out.println("\nYou retreat to the center of the Town Square.");
-            // No coordinate change happens.
             Utils.pause();
             return true;
         }
@@ -718,7 +709,6 @@ public class GridQuestRPG {
 
         Utils.clear();
 
-        // Cinematic Intro with 1-second timers
         try {
             System.out.println("The iron gates groan as they loom over you...");
             Thread.sleep(1000);
@@ -729,7 +719,6 @@ public class GridQuestRPG {
             System.out.println("[ Press ENTER to Draw Your Weapon ]");
             input.nextLine();
         } catch (InterruptedException e) {
-            // Fallback if timer glitches
         }
 
         int bossHP = 150;
@@ -755,14 +744,13 @@ public class GridQuestRPG {
                 System.out.println("\n>> You chug a potion! (+ " + healAmount + " HP)");
             }
 
-            // Sentinel's Turn with timing
             if (bossHP > 0) {
                 try {
-                    Thread.sleep(1000); // Wait 1 second before boss hits
+                    Thread.sleep(1000); 
                     int bDam = rand.nextInt(12) + 15;
                     player.setHealth(player.getHealth() - bDam);
                     System.out.println(">> The Sentinel crushes you for " + bDam + "!");
-                    Thread.sleep(1000); // Wait 1 second so they see the damage
+                    Thread.sleep(1000); 
                     System.out.println("\n[ Press Enter to continue ]");
                     input.nextLine();
                 } catch (InterruptedException e) {
@@ -770,7 +758,6 @@ public class GridQuestRPG {
             }
         }
 
-        // Victory/Defeat
         if (player.getHealth() > 0) {
             System.out.println("\nTHE SENTINEL: 'You... are iron.'");
             System.out.println("The giant shatters into cold dust. The path is clear.");
