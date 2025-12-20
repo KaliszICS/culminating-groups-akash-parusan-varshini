@@ -1,3 +1,5 @@
+// Abstract classes and interfaces
+// Abstract base class that defines shared behavior for Player and Enemy.
 public abstract class Character {
 
     protected int health;

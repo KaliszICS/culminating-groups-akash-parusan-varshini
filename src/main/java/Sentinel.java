@@ -1,3 +1,5 @@
+// Inheritance, Overriding, Polymorphism
+// Boss enemy that overrides attack behavior based on health state.
 import java.util.Random;
 
 public class Sentinel extends Enemy {

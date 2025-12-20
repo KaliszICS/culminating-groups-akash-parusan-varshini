@@ -1,3 +1,5 @@
+// Classes
+// Represents a riddle with a question and answer.
 public class Riddle {
 
     private String question;

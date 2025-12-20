@@ -1,3 +1,5 @@
+// Inheritance, Abstract classes and interfaces
+// Player extends Character and implements Saveable for file saving.
 public class Player extends Character implements Saveable {
     private Inventory inventory;
     private int x = 1;

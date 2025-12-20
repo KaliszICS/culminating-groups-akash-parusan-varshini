@@ -1,3 +1,5 @@
+// Classes, Sorting (Selection), Searching (Sequential)
+// Manages items and implements selection sort and sequential search.
 import java.util.ArrayList;
 
 public class Inventory {

@@ -1,3 +1,5 @@
+// Classes, Polymorphism
+// Handles turn-based combat using polymorphic takeTurn() calls.
 import java.util.Scanner;
 
 public class BattleSystem {
