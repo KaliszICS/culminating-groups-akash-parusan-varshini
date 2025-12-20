@@ -1,3 +1,4 @@
+package game.riddles;
 // Classes
 // Represents a riddle with a question and answer.
 public class Riddle {

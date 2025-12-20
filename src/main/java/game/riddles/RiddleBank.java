@@ -1,4 +1,4 @@
-
+package game.riddles;
 // Classes, Recursion
 // Stores riddles and uses a recursive shuffle algorithm.
 import java.util.ArrayList;
@@ -28,13 +28,10 @@ public class RiddleBank {
         if (n <= 1) {
             return;
         }
-        ;
-
         int j = (int) (Math.random() * n);
         Riddle temp = list.get(n - 1);
         list.set(n - 1, list.get(j));
         list.set(j, temp);
-
         shuffle(list, n - 1);
     }
 }

@@ -1,3 +1,4 @@
+package game.ui;
 // Classes
 // Displays menus and handles menu navigation.
 import java.util.Scanner;

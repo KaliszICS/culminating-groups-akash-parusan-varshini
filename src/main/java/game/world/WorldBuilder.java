@@ -1,3 +1,4 @@
+package game.world;
 // Classes
 // Creates and initializes the game world structure.
 import java.util.ArrayList;

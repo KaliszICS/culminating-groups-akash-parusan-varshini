@@ -1,3 +1,4 @@
+package game.world;
 // Classes
 // Represents a room object with enemies, exits, and display logic.
 import java.util.HashMap;

@@ -1,3 +1,4 @@
+package game.characters;
 // Inheritance, Abstract classes and interfaces
 // Player extends Character and implements Saveable for file saving.
 public class Player extends Character implements Saveable {
@@ -9,7 +10,7 @@ public class Player extends Character implements Saveable {
         this.maxHealth = 100;
         this.health = 100;
         this.attack = 15;
-        inventory = new Inventory();
+        inventory = new game.inventory.Inventory();
     }
 
     public Player(int health, int attack) {

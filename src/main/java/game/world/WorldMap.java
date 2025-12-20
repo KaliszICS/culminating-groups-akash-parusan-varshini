@@ -1,3 +1,4 @@
+package game.world;
 public class WorldMap {
     private String[][] grid;
 

@@ -1,4 +1,4 @@
-
+package game;
 // Classes
 // Main driver class that controls program flow and coordinates all other classes.
 import java.util.ArrayList;

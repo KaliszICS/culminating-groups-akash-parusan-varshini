@@ -1,3 +1,4 @@
+package game.minigames;
 // Classes, Recursion
 // Uses recursion for repeated gambling rounds.
 import java.util.Scanner;

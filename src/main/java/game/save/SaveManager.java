@@ -1,4 +1,4 @@
-
+package game.save;
 // File I/O
 // Saves and loads game data using files.
 import java.io.*;

@@ -1,3 +1,4 @@
+package game.characters;
 // Inheritance, Overriding
 // Enemy extends Character and overrides takeTurn() behavior.
 public class Enemy extends Character {

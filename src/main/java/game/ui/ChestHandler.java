@@ -1,3 +1,4 @@
+package game.ui;
 // Classes
 // Handles chest interaction and riddle validation.
 import java.util.ArrayList;

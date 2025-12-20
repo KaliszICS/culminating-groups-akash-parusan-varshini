@@ -1,3 +1,4 @@
+package game.characters;
 // Inheritance
 // Specialized Enemy subclass with predefined stats.
 public class Goblin extends Enemy {

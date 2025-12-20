@@ -1,3 +1,4 @@
+package game.characters;
 // Inheritance, Overriding, Polymorphism
 // Boss enemy that overrides attack behavior based on health state.
 import java.util.Random;

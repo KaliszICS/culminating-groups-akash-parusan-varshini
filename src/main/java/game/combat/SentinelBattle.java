@@ -1,3 +1,4 @@
+package game.combat;
 // Classes
 // Dedicated boss battle logic separated from normal combat.
 import java.util.Random;
