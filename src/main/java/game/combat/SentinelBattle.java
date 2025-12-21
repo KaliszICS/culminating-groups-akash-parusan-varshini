@@ -1,14 +1,41 @@
 package game.combat;
-// Classes
-// Dedicated boss battle logic separated from normal combat.
+
 import java.util.Random;
 import java.util.Scanner;
+import game.util.Utils;
+import game.GridQuestRPG;
+import game.characters.Player;
 
+/**
+ * The SentinelBattle class handles the final boss encounter in the game.
+ * It presents narrative dialogue, manages a unique combat loop,
+ * and determines the outcome of the final battle.
+ *
+ * This class is separated from the normal BattleSystem to keep
+ * the boss-specific logic isolated from regular fights and to keep it organized.
+ *
+ * @author Akash K.
+ * @author Parusan P.
+ * @author Varshini B.
+ * @version 1.0
+ */
+// [Classes]
 public class SentinelBattle {
 
+    /**
+     * Initiates and controls the Sentinel boss fight.
+     * The player may choose to engage or retreat before combat begins.
+     *
+     * @param player the player participating in the boss battle
+     * @param input the scanner used for user input
+     * @return true if the player defeats the Sentinel, false otherwise
+     */
+    // [Classes]
+    // [File I/O] (loads ASCII art from external file)
     public static boolean fight(Player player, Scanner input) {
+
         Utils.clear();
-        String[] castleArt = GridQuestRPG.loadArtFromFile("sentinel_road_intro.txt");
+        String[] castleArt = GridQuestRPG.loadArtFromFile("sentinel_road_intro.txt"); // [File I/O]
         for (String line : castleArt) {
             System.out.println(line);
         }

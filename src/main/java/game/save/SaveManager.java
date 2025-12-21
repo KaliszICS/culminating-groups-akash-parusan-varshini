@@ -4,6 +4,10 @@ package game.save;
 import java.io.*;
 import java.util.Scanner;
 
+import game.inventory.Saveable;
+import game.util.Utils;
+import game.characters.Player;
+
 public class SaveManager {
     private static final String SAVE_FILE = "savegame.txt";
 

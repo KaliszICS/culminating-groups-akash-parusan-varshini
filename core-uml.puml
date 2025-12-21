@@ -1,0 +1,293 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+' =====================================================
+' game.characters
+' =====================================================
+package "game.characters" {
+
+    abstract class Character {
+        # health : int
+        # attack : int
+        # maxHealth : int
+        + takeTurn(player : Player) : void
+        + isAlive() : boolean
+        + getHealth() : int
+        + getMaxHealth() : int
+        + getAttack() : int
+        + takeDamage(dmg : int) : void
+        + heal(amount : int) : void
+    }
+
+    class Player {
+        - inventory : Inventory
+        - x : int
+        - y : int
+        + Player()
+        + Player(health : int, attack : int)
+        + takeTurn(player : Player) : void
+        + getInventory() : Inventory
+        + saveData() : String
+        + setHealth(health : int) : void
+        + getX() : int
+        + getY() : int
+        + setX(x : int) : void
+        + setY(y : int) : void
+    }
+
+    class Enemy {
+        - name : String
+        + Enemy(name : String, health : int, attack : int)
+        + takeTurn(player : Player) : void
+        + getName() : String
+    }
+
+    class Goblin {
+        + Goblin()
+    }
+
+    Character <|-- Player
+    Character <|-- Enemy
+    Enemy <|-- Goblin
+}
+
+' =====================================================
+' game.inventory
+' =====================================================
+package "game.inventory" {
+
+    interface Saveable {
+        + saveData() : String
+    }
+
+    class Inventory {
+        - items : ArrayList<String>
+        - order : ArrayList<String>
+        + Inventory()
+        + usePotion(player : Player) : boolean
+        + useApple(player : Player) : boolean
+        + contains(target : String) : boolean
+        + addItem(item : String) : void
+        + display() : void
+        + hasPotion() : boolean
+        + removePotion() : void
+        + addMultipleItems(itemName : String, count : int) : void
+        + getItems() : ArrayList<String>
+        + selectionSort() : void
+        + sequentialSearch(target : String) : int
+        + saveData() : String
+    }
+
+    Saveable <|.. Inventory
+}
+
+' =====================================================
+' game.world
+' =====================================================
+package "game.world" {
+
+    class Room {
+        - name : String
+        - description : String
+        - art : String[]
+        - enemy : Enemy
+        - exits : HashMap<String, Integer>
+        + Room(name : String, description : String)
+        + setArt(art : String[]) : void
+        + setEnemy(enemy : Enemy) : void
+        + hasEnemy() : boolean
+        + getEnemy() : Enemy
+        + defeatEnemy() : void
+        + addExit(direction : String, roomIndex : int) : void
+        + getExit(direction : String) : int
+        + getName() : String
+        + display() : void
+    }
+
+    class WorldBuilder {
+        + createWorld(map : ArrayList<Room>) : void
+    }
+
+    class WorldMap {
+        + display(currentRoom : int) : void
+    }
+
+    Room o-- Enemy
+}
+
+' =====================================================
+' game.riddles
+' =====================================================
+package "game.riddles" {
+
+    class Riddle {
+        - question : String
+        - answer : String
+        + Riddle(question : String, answer : String)
+        + getQuestion() : String
+        + checkAnswer(input : String) : boolean
+    }
+
+    class RiddleBank {
+        + load() : ArrayList<Riddle>
+        + shuffle(list : ArrayList<Riddle>) : void
+    }
+}
+
+' =====================================================
+' game.ui
+' =====================================================
+package "game.ui" {
+
+    class GameMenus {
+        + showStartMenu(input : Scanner) : void
+        + showHelpMenu() : void
+        + playIntro() : void
+    }
+
+    class InventoryMenu {
+        + open(player : Player, input : Scanner) : void
+    }
+
+    class ChestHandler {
+        + tryOpen(
+            room : Room,
+            player : Player,
+            riddles : ArrayList<Riddle>,
+            input : Scanner,
+            chestOpened : boolean
+          ) : boolean
+    }
+}
+
+' =====================================================
+' game.minigames
+' =====================================================
+package "game.minigames" {
+
+    class GambleGame {
+        + play(player : Player, input : Scanner) : void
+    }
+}
+
+' =====================================================
+' game.combat
+' =====================================================
+package "game.combat" {
+
+    class BattleSystem {
+        + fight(player : Player, enemy : Enemy, input : Scanner) : int
+    }
+
+    class SentinelBattle {
+        + fight(player : Player, input : Scanner) : boolean
+    }
+}
+
+' =====================================================
+' game.save
+' =====================================================
+package "game.save" {
+
+    class SaveManager {
+        + saveGame(
+            currentRoom : int,
+            chestOpened : boolean,
+            player : Player,
+            inventory : Inventory
+          ) : void
+        + loadGame(player : Player) : int[]
+    }
+}
+
+' =====================================================
+' game.util
+' =====================================================
+package "game.util" {
+
+    class Utils {
+        + clear() : void
+        + pause() : void
+    }
+}
+
+' =====================================================
+' game (main)
+' =====================================================
+package "game" {
+
+    class GridQuestRPG {
+        - sentinelDefeated : boolean
+        - currentRoom : int
+        - chestOpened : boolean
+        + main(args : String[]) : void
+    }
+}
+
+' =====================================================
+' RELATIONSHIPS
+' =====================================================
+Player *-- Inventory
+Player ..|> Saveable
+
+GridQuestRPG *-- Player
+GridQuestRPG *-- Room
+GridQuestRPG o-- WorldMap
+
+GridQuestRPG ..> GameMenus
+GridQuestRPG ..> InventoryMenu
+GridQuestRPG ..> ChestHandler
+GridQuestRPG ..> GambleGame
+GridQuestRPG ..> BattleSystem
+GridQuestRPG ..> SentinelBattle
+GridQuestRPG ..> SaveManager
+GridQuestRPG ..> Utils
+
+ChestHandler ..> Riddle
+GambleGame ..> Player
+BattleSystem ..> Player
+BattleSystem ..> Enemy
+SentinelBattle ..> Player
+
+' ================= NOTES =================
+together {
+note right of GambleGame
+  Uses recursive logic:
+  gambleRound() calls itself
+  to allow repeated wagering.
+end note
+
+note right of RiddleBank
+  shuffle() is implemented
+  recursively to randomize
+  riddle order.
+end note
+
+note right of SentinelBattle
+  Boss behavior changes at runtime.
+  When Sentinel HP < 50:
+  - armorCracked becomes true
+  - attack damage is reduced.
+  This represents a state change.
+end note
+
+note right of SaveManager
+  Handles file persistence:
+  - writes player data to savegame.txt
+  - restores game state on load.
+end note
+
+note right of Utils
+  Provides static utility behavior:
+  - clears terminal screen
+  - pauses execution for input.
+end note
+
+note bottom of GridQuestRPG
+  Scanner is created once in main
+  and passed through method calls
+  to avoid global state.
+end note
+}
+@enduml
