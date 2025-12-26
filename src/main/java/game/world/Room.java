@@ -146,8 +146,7 @@ public class Room {
             }
         }
 
-        // Show available exits
-        if (hasEnemy()) {
+        if (name.equals("Forest Clearing") && hasEnemy()) {
             System.out.println("\nExits: (blocked)");
         } else {
             System.out.println("\nExits: " + exits.keySet());

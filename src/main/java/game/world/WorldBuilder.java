@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import game.GridQuestRPG;
 import game.characters.Enemy;
+import game.characters.Sentinel;
 
 /**
  * The WorldBuilder class is responsible for creating and initializing
@@ -63,9 +64,12 @@ public class WorldBuilder {
         Room r4 = new Room(
                 "The Forgotten Road",
                 "The path ahead is clear and silent. Something massive watches from beyond the fog.");
-        r4.setArt(GridQuestRPG.loadArtFromFile("road_art.txt")); // [File I/O]
-        r4.addExit("down", 1);
-        r4.addExit("up", -1);
+
+        r4.setArt(GridQuestRPG.loadArtFromFile("road_art.txt"));
+        r4.setEnemy(new Sentinel());
+        r4.addExit("down", 1); 
+        r4.addExit("up", -1); 
+
         map.add(r4);
 
         // Room 5: The Arcane Study
@@ -75,6 +79,5 @@ public class WorldBuilder {
         r5.setArt(GridQuestRPG.loadArtFromFile("wizard_art.txt")); // File I/O
         r5.addExit("up", 1);
         map.add(r5);
-
     }
 }

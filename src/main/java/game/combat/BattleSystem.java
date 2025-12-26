@@ -5,6 +5,7 @@ import game.util.Utils;
 import game.characters.Player;
 import game.characters.Enemy;
 import game.ui.WizardHandler;
+import game.characters.Sentinel;
 
 /**
  * The BattleSystem class manages turn-based combat between the player
@@ -12,43 +13,44 @@ import game.ui.WizardHandler;
  * It coordinates player choices, enemy responses, and determines
  * the outcome of battles.
  *
- * This class demonstrates polymorphism by calling the overridden
- * takeTurn() method on Enemy objects.
- *
  * @author Akash K.
  * @author Parusan P.
  * @author Varshini B.
  * @version 1.0
  */
-// [Classes]
-// [Polymorphism]
-public class BattleSystem {
+public class BattleSystem { // Classes
 
     /**
      * Runs a turn-based fight between a player and an enemy.
-     * The method continues until either the player or the enemy
-     * is defeated, or the player chooses to run.
      *
      * @param player the player participating in the fight
      * @param enemy  the enemy being fought
      * @param input  the scanner used for user input
      * @return 0 if enemy is defeated, 1 if player runs, -1 if player dies
      */
-    // [Classes]
-    // [Polymorphism]
-    public static int fight(Player player, Enemy enemy, Scanner input) {
+    public static int fight(Player player, Enemy enemy, Scanner input) { // Classes
         boolean healingUsed = false;
-        boolean timeSlowActive = false;
         boolean fireBoltActive = false;
+        boolean enemyFrozen = false;
+        boolean freezePending = false;
 
         while (player.isAlive() && enemy.isAlive()) {
+            // Polymorphism
+
+            if (freezePending) {
+                enemyFrozen = true;
+                freezePending = false;
+            }
+
             Utils.clear();
             displayStatus(player, enemy);
 
             System.out.println("[1] Attack");
             System.out.println("[2] Use Item");
             System.out.println("[3] Run");
-            if (WizardHandler.hasFireBolt() || WizardHandler.hasHealingLight() || WizardHandler.hasTimeSlow()) {
+            if (WizardHandler.hasFireBolt()
+                    || WizardHandler.hasHealingLight()
+                    || WizardHandler.hasTimeSlow()) {
                 System.out.println("[4] Cast Spell");
             }
 
@@ -57,18 +59,31 @@ public class BattleSystem {
             String choice = input.nextLine().trim();
             boolean turnConsumed = false;
 
-            // ---------- PLAYER TURN ----------
             if (choice.equals("1")) {
 
-                int dmg = player.getAttack();
+                int dmg;
+
+                if (enemy instanceof Sentinel) {
+                    dmg = (int) (Math.random() * 11) + 10;
+                    // Inheritance
+                } else {
+                    dmg = player.getAttack();
+                }
 
                 if (fireBoltActive) {
                     dmg += 10;
-                    fireBoltActive = false; // consumed after one attack
+                    fireBoltActive = false;
                 }
 
-                System.out.println("\nYou attack for " + dmg + " damage!");
+                if (enemy instanceof Sentinel) {
+                    System.out.println("\nYou strike the Sentinel for " + dmg + "!");
+                } else {
+                    System.out.println("\nYou attack for " + dmg + " damage!");
+                }
+
                 enemy.takeDamage(dmg);
+                // Polymorphism
+
                 turnConsumed = true;
                 Utils.pause();
             }
@@ -82,6 +97,8 @@ public class BattleSystem {
                 }
 
                 player.getInventory().display();
+                // Abstract classes and interfaces
+
                 System.out.println("\n[1] Potion  [2] Apple  [3] Back");
                 System.out.print("> ");
                 String itemChoice = input.nextLine().trim();
@@ -126,11 +143,11 @@ public class BattleSystem {
 
                 String spell = input.nextLine().trim();
 
-                // -------- HEALING LIGHT --------
                 if (spell.equals("2")) {
 
                     if (!WizardHandler.hasHealingLight()) {
                         System.out.println("You have not learned that spell.");
+                        // Searching
 
                     } else if (healingUsed) {
                         System.out.println("Healing Light has already been used.");
@@ -145,29 +162,28 @@ public class BattleSystem {
                     Utils.pause();
                 }
 
-                // -------- TIME SLOW --------
                 else if (spell.equals("3")) {
 
                     if (!WizardHandler.hasTimeSlow()) {
                         System.out.println("You have not learned that spell.");
+                        // Searching
 
-                    } else if (timeSlowActive) {
+                    } else if (freezePending || enemyFrozen) {
                         System.out.println("Time is already distorted.");
-
                     } else {
-                        timeSlowActive = true;
                         turnConsumed = true;
+                        freezePending = true;
                         System.out.println("\nTime slows around your enemy!");
                     }
 
                     Utils.pause();
                 }
 
-                // -------- FIRE BOLT --------
                 else if (spell.equals("1")) {
 
                     if (!WizardHandler.hasFireBolt()) {
                         System.out.println("You have not learned that spell.");
+                        // Searching
 
                     } else if (fireBoltActive) {
                         System.out.println("Fire Bolt is already primed.");
@@ -189,32 +205,28 @@ public class BattleSystem {
                 continue;
             }
 
-            // ---------- ENEMY TURN ----------
             if (turnConsumed && enemy.isAlive()) {
-
-                if (timeSlowActive) {
+                if (enemyFrozen) {
                     System.out.println("\nThe enemy is frozen in time!");
-                    timeSlowActive = false;
+                    enemyFrozen = false;
                     Utils.pause();
                 } else {
-                    enemy.takeTurn(player); // [Polymorphism]
+                    enemy.takeTurn(player);
+                    // Polymorphism
                     Utils.pause();
                 }
             }
-
         }
-
         return player.isAlive() ? 0 : -1;
     }
 
     /**
-     * Displays the current health status of the player and enemy.
+     * Displays the current health status of both the player and the enemy.
      *
      * @param p the player
      * @param e the enemy
      */
-    // [Classes]
-    private static void displayStatus(Player p, Enemy e) {
+    private static void displayStatus(Player p, Enemy e) { // Classes
         System.out.println("================================");
         System.out.println("Player HP: " + p.getHealth() + "/" + p.getMaxHealth());
         System.out.println(e.getName() + " HP: " + e.getHealth() + "/" + e.getMaxHealth());

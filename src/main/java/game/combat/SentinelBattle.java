@@ -1,51 +1,47 @@
 package game.combat;
 
-import java.util.Random;
 import java.util.Scanner;
 import game.util.Utils;
 import game.GridQuestRPG;
+import game.characters.Enemy;
 import game.characters.Player;
+import game.characters.Sentinel;
 import game.ui.WizardHandler;
 
 /**
- * The SentinelBattle class handles the final boss encounter in the game.
- * It presents narrative dialogue, manages a unique combat loop,
- * and determines the outcome of the final battle.
+ * The SentinelBattle class manages the final boss encounter in the game.
+ * It controls the cinematic introduction, player decision-making,
+ * spell-enhanced combat, and the conclusion of the storyline.
  *
- * This class is separated from the normal BattleSystem to keep
- * the boss-specific logic isolated from regular fights and to keep it
- * organized.
+ * This class exists separately from the regular BattleSystem so that
+ * the Sentinel fight can include unique dialogue, pacing, and mechanics.
  *
  * @author Akash K.
  * @author Parusan P.
  * @author Varshini B.
  * @version 1.0
  */
-// [Classes]
-public class SentinelBattle {
+public class SentinelBattle { // Classes
 
     /**
-     * Initiates and controls the Sentinel boss fight.
-     * The player may choose to engage or retreat before combat begins.
+     * Runs the Sentinel boss encounter.
+     * Displays a cinematic introduction, allows the player to choose whether
+     * to engage or retreat, and manages a spell-enhanced boss combat loop.
      *
-     * @param player the player participating in the boss battle
-     * @param input  the scanner used for user input
-     * @return true if the player defeats the Sentinel, false otherwise
+     * @param player the player participating in the boss fight
+     * @param input  scanner used for player input
+     * @return true if the Sentinel is defeated, false if the player retreats
      */
-    // [Classes]
-    // [File I/O] (loads ASCII art from external file)
-    public static boolean fight(Player player, Scanner input) {
-        boolean healingUsed = false;
-        boolean timeSlowActive = false;
+    public static boolean fight(Player player, Scanner input) { // Classes
         Utils.clear();
-        String[] castleArt = GridQuestRPG.loadArtFromFile("sentinel_road_intro.txt"); // [File I/O]
+
+        String[] castleArt = GridQuestRPG.loadArtFromFile("sentinel_road_intro.txt");
+        // File I/O
         for (String line : castleArt) {
             System.out.println(line);
         }
 
         Utils.pause();
-
-        Random rand = new Random();
 
         try {
             Thread.sleep(1000);
@@ -54,8 +50,6 @@ public class SentinelBattle {
             System.out.println("Iron footsteps echo ahead.");
             Thread.sleep(1000);
             System.out.println("A towering figure emerges from the fog.");
-            Thread.sleep(1000);
-            System.out.println("Behind it, the silhouette of a ruined castle looms.");
             Thread.sleep(1000);
             System.out.println("\nTHE SENTINEL: \"Glass breaks. Iron remains.\"");
             Thread.sleep(1000);
@@ -66,185 +60,169 @@ public class SentinelBattle {
         System.out.println("[2] Retreat to the road");
         System.out.print("> ");
 
-        String preChoice = input.nextLine().trim();
-
-        if (preChoice.equals("2")) {
-            System.out.println("\nYou step back as the fog swallows the figure once more...");
+        if (!input.nextLine().trim().equals("1")) {
+            System.out.println("\nYou step back as the fog swallows the figure...");
             Utils.pause();
             return false;
         }
 
-        int bossHP = 150;
-        boolean armorCracked = false;
+        Enemy sentinel = new Sentinel();
+        // Inheritance
+        // Polymorphism
 
-        while (bossHP > 0 && player.getHealth() > 0) {
-            Utils.clear();
+        boolean fireBoltPrimed = false;
+        boolean healingUsed = false;
+        boolean timeSlowActive = false;
+        boolean fireBoltUsed = false;
+        boolean timeSlowUsed = false;
 
-            System.out.println("========================================");
-            System.out.println("           BOSS: THE SENTINEL");
-            System.out.println("========================================");
-            System.out.println("Sentinel HP: " + bossHP + "/150");
-            System.out.println("Your HP    : " + player.getHealth() + "/100");
-            System.out.println("\n[1] Attack");
-            System.out.println("[2] Use Item");
-            if (WizardHandler.hasFireBolt()
-                    || WizardHandler.hasHealingLight()
-                    || WizardHandler.hasTimeSlow()) {
+        try {
+            while (player.isAlive() && sentinel.isAlive()) {
+                // Polymorphism
+
+                Utils.clear();
+
+                System.out.println("================================");
+                System.out.println("Player HP: " + player.getHealth() + "/100");
+                System.out.println("Sentinel HP: " + sentinel.getHealth() + "/150");
+                System.out.println("================================");
+
+                System.out.println("[1] Attack");
+                System.out.println("[2] Use Item");
                 System.out.println("[3] Cast Spell");
-            }
-
-            System.out.print("> ");
-
-            String choice = input.nextLine().trim();
-            // -------- CAST SPELL --------
-            if (choice.equals("3")) {
-
-                System.out.println("\n[1] Fire Bolt");
-                System.out.println("[2] Healing Light");
-                System.out.println("[3] Time Slow");
                 System.out.print("> ");
 
-                String spell = input.nextLine().trim();
+                String choice = input.nextLine().trim();
 
-                // Healing Light
-                if (spell.equals("2")) {
-
-                    if (!WizardHandler.hasHealingLight()) {
-                        System.out.println("You have not learned that spell.");
-
-                    } else if (healingUsed) {
-                        System.out.println("Healing Light has already been used.");
-
-                    } else {
-                        player.setHealth(100);
-                        healingUsed = true;
-                        System.out.println("\nHealing Light restores you completely!");
-                    }
-
-                    Utils.pause();
+                if (!choice.equals("1") && !choice.equals("2") && !choice.equals("3")) {
+                    System.out.println("\nUnknown command.");
+                    Thread.sleep(1200);
                     continue;
                 }
 
-                // Time Slow
-                if (spell.equals("3")) {
-
-                    if (!WizardHandler.hasTimeSlow()) {
-                        System.out.println("You have not learned that spell.");
-
-                    } else if (timeSlowActive) {
-                        System.out.println("Time is already distorted.");
-
-                    } else {
-                        timeSlowActive = true;
-                        System.out.println("\nTime slows around the Sentinel!");
-                    }
-
-                    Utils.pause();
+                if (choice.equals("2")) {
+                    game.inventory.InventoryMenu.open(player, input);
+                    // Abstract classes and interfaces
                     continue;
                 }
 
-                // Fire Bolt
-                System.out.println("Fire Bolt empowers your attacks passively.");
-                Utils.pause();
-                continue;
-            }
+                if (choice.equals("3")) {
 
-            if (choice.equals("1")) {
-                int pDamage = rand.nextInt(16) + 15;
+                    System.out.println("\n[1] Fire Bolt");
+                    System.out.println("[2] Healing Light");
+                    System.out.println("[3] Time Slow");
+                    System.out.print("> ");
 
-                if (WizardHandler.hasFireBolt()) {
-                    pDamage += 10;
-                }
+                    String spell = input.nextLine().trim();
 
-                if (WizardHandler.hasFireBolt()) {
-                    pDamage += 10;
-                }
-                bossHP -= pDamage;
-                System.out.println("\nYou strike the Sentinel for " + pDamage + "!");
-                Utils.pause();
+                    if (spell.equals("1") && WizardHandler.hasFireBolt()) {
+                        // Searching
 
-            } else if (choice.equals("2")) {
-
-                player.getInventory().display();
-                System.out.println("\n[1] Potion  [2] Apple  [3] Back");
-                System.out.print("> ");
-                String itemChoice = input.nextLine().trim();
-
-                if (itemChoice.equals("3"))
-                    continue;
-
-                if (itemChoice.equals("1")) {
-                    if (player.getInventory().usePotion(player)) {
-                        System.out.println("\nYou drink a Potion.");
-                        System.out.println("Health restored to: " + player.getHealth() + "/100");
-                    } else {
-                        System.out.println("\nYou have no Potions!");
-                    }
-                } else if (itemChoice.equals("2")) {
-                    if (player.getInventory().useApple(player)) {
-                        System.out.println("\nYou eat an Apple.");
-                        System.out.println("Health restored to: " + player.getHealth() + "/100");
-                    } else {
-                        System.out.println("\nYou have no Apples!");
-                    }
-                }
-
-                Utils.pause();
-            }
-
-            if (bossHP > 0) {
-                if (timeSlowActive) {
-                    System.out.println("\nThe Sentinel is frozen in time!");
-                    timeSlowActive = false;
-                    Utils.pause();
-                    continue;
-                }
-                try {
-                    Thread.sleep(1000);
-
-                    int sDamage;
-                    if (bossHP <= 50) {
-                        if (!armorCracked) {
-                            System.out.println("\nCracks form in the Sentinel's armor...");
-                            armorCracked = true;
-                            Thread.sleep(1000);
+                        if (fireBoltUsed) {
+                            System.out.println("\nThe flames have already been spent.");
+                            Thread.sleep(1200);
+                            continue;
                         }
-                        sDamage = rand.nextInt(10) + 10;
-                    } else {
-                        sDamage = rand.nextInt(16) + 10;
+
+                        fireBoltPrimed = true;
+                        fireBoltUsed = true;
+                        System.out.println("\nFlames gather around your weapon...");
+                        Thread.sleep(1200);
+                        continue;
                     }
 
-                    player.takeDamage(sDamage);
-                    System.out.println("\nThe Sentinel smashes you for " + sDamage + "!");
-                    Thread.sleep(1000);
-                    System.out.println("[ Press ENTER to continue ]");
-                    input.nextLine();
+                    if (spell.equals("2") && WizardHandler.hasHealingLight()) {
+                        // Searching
 
-                } catch (InterruptedException e) {
+                        if (!healingUsed) {
+                            player.setHealth(player.getMaxHealth());
+                            healingUsed = true;
+                            System.out.println("\nHealing Light restores you completely!");
+                            Thread.sleep(1200);
+                        } else {
+                            System.out.println("\nHealing Light has already been used.");
+                            Thread.sleep(1200);
+                        }
+                        continue;
+                    }
+
+                    if (spell.equals("3") && WizardHandler.hasTimeSlow()) {
+                        // Searching
+
+                        if (timeSlowUsed) {
+                            System.out.println("\nTime refuses to bend again.");
+                            Thread.sleep(1200);
+                            continue;
+                        }
+
+                        timeSlowActive = true;
+                        timeSlowUsed = true;
+                        System.out.println("\nTime bends around the Sentinel...");
+                        Thread.sleep(1200);
+                        continue;
+                    }
+
+                    System.out.println("\nYou have not learned that spell.");
+                    Thread.sleep(1200);
+                    continue;
                 }
+
+                if (choice.equals("1")) {
+                    int dmg = (int) (Math.random() * 11) + 10;
+                    // Randomized damage calculation
+
+                    if (fireBoltPrimed) {
+                        dmg += 10;
+                        fireBoltPrimed = false;
+                    }
+
+                    sentinel.takeDamage(dmg);
+                    // Polymorphism
+
+                    System.out.println("\nYou strike the Sentinel for " + dmg + "!");
+                    Thread.sleep(1200);
+                }
+
+                if (sentinel.isAlive()) {
+
+                    if (timeSlowActive) {
+                        System.out.println("\nThe Sentinel is frozen in time!");
+                        timeSlowActive = false;
+                        Thread.sleep(1200);
+
+                    } else {
+                        int sDmg = (int) (Math.random() * 16) + 15;
+                        player.takeDamage(sDmg);
+                        // Polymorphism
+
+                        System.out.println("\nThe Sentinel smashes you for " + sDmg + "!");
+                        Thread.sleep(1200);
+                    }
+                }
+
             }
+
+            if (!player.isAlive()) {
+                System.out.println("\nYOU HAVE FALLEN.");
+                Thread.sleep(1200);
+                System.exit(0);
+            }
+
+            Thread.sleep(1200);
+            System.out.println("\nTHE SENTINEL: \"You... are iron.\"");
+            Thread.sleep(1200);
+            System.out.println("The giant shatters into cold dust.");
+            Thread.sleep(1200);
+            System.out.println("\nYou have beaten the RPG.");
+            Thread.sleep(1200);
+            System.out.println("But the world remains open - so feel free to explore!");
+            Thread.sleep(1200);
+            System.out.println("\n(Press ENTER)");
+            input.nextLine();
+
+        } catch (InterruptedException e) {
         }
 
-        if (player.getHealth() > 0) {
-            try {
-                Thread.sleep(1000);
-                System.out.println("\nTHE SENTINEL: \"You... are iron.\"");
-                Thread.sleep(1000);
-                System.out.println("The giant shatters into cold dust.");
-                Thread.sleep(1000);
-                System.out.println("\nYou have beaten the RPG.");
-                Thread.sleep(1000);
-                System.out.println("But the world remains open - so feel free to explore!");
-                Thread.sleep(1000);
-                System.out.println("\n(Press ENTER)");
-                input.nextLine();
-            } catch (InterruptedException e) {
-            }
-            return true;
-        }
-
-        System.out.println("\nYOU HAVE FALLEN.");
-        System.exit(0);
-        return false;
+        return true;
     }
 }

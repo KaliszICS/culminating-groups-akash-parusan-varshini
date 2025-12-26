@@ -3,24 +3,42 @@ package game.ui;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import game.characters.Player;
 import game.characters.Enemy;
+import game.characters.Player;
 import game.combat.BattleSystem;
 import game.riddles.Riddle;
 import game.riddles.RiddleBank;
 import game.util.Utils;
 
-public class WizardHandler {
+/**
+ * Handles all interactions with the wizard character.
+ * This includes spell trials, unlocking abilities, and
+ * managing spell availability for combat.
+ *
+ * @author Akash K.
+ * @author Parusan P.
+ * @author Varshini B.
+ * @version 1.0
+ */
+public class WizardHandler { // Classes
 
     private static boolean fireUnlocked = false;
     private static boolean healUnlocked = false;
     private static boolean slowUnlocked = false;
 
-    public static void interact(Player player, Scanner input) {
+    /**
+     * Controls the wizard interaction menu.
+     * Allows the player to select and complete spell trials
+     * or leave the Arcane Study.
+     *
+     * @param player the player interacting with the wizard
+     * @param input  scanner used for player input
+     */
+    public static void interact(Player player, Scanner input) { // Classes
 
         boolean done = false;
 
-        while (!done) {
+        while (!done) { // Iteration
             Utils.clear();
             System.out.println("WIZARD: \"Power must be earned.\"");
             System.out.println();
@@ -54,10 +72,16 @@ public class WizardHandler {
         }
     }
 
-    // ---------------- FIRE BOLT ----------------
+    /**
+     * Runs the Trial of Flame.
+     * The player must correctly answer two riddles in a row
+     * to unlock the Fire Bolt spell.
+     *
+     * @param input scanner used for player input
+     */
     private static void trialOfFlame(Scanner input) {
         if (fireUnlocked) {
-            System.out.println("You already wield Fire Bolt.");
+            System.out.println("The wizard says: \"You already wield Fire Bolt.\"");
             Utils.pause();
             return;
         }
@@ -65,14 +89,10 @@ public class WizardHandler {
         System.out.println("WIZARD: \"Two truths, spoken without error.\"");
         Utils.pause();
 
-        // Load riddles ONCE
-        ArrayList<Riddle> riddles = RiddleBank.load();
+        ArrayList<Riddle> riddles = RiddleBank.load(); // File I/O
+        RiddleBank.shuffle(riddles); // Sorting
 
-        // Shuffle so order is random
-        RiddleBank.shuffle(riddles);
-
-        // Ask first two riddles (guaranteed different)
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) { // Iteration
             Riddle r = riddles.get(i);
 
             System.out.println("\nRiddle " + (i + 1) + ":");
@@ -91,7 +111,14 @@ public class WizardHandler {
         Utils.pause();
     }
 
-    // ---------------- HEALING LIGHT ----------------
+    /**
+     * Runs the Trial of Light.
+     * The player must donate two potions to unlock
+     * the Healing Light spell.
+     *
+     * @param player the player completing the trial
+     * @param input  scanner used for player input
+     */
     private static void trialOfLight(Player player, Scanner input) {
         if (healUnlocked) {
             System.out.println("The wizard says: \"You already know this spell.\"");
@@ -99,10 +126,8 @@ public class WizardHandler {
             return;
         }
 
-        System.out.println(
-                "WIZARD: \"Healing Light requires sacrifice.\"");
-        System.out.println(
-                "Donate 2 Potions to learn Healing Light? (y/n)");
+        System.out.println("WIZARD: \"Healing Light requires sacrifice.\"");
+        System.out.println("Donate 2 Potions to learn Healing Light? (y/n)");
         System.out.print("> ");
 
         String choice = input.nextLine().trim().toLowerCase();
@@ -113,8 +138,7 @@ public class WizardHandler {
             return;
         }
 
-        // Check + remove exactly 2 potions
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) { // Iteration
             if (!player.getInventory().usePotion(player)) {
                 System.out.println("You do not have enough Potions.");
                 Utils.pause();
@@ -129,20 +153,24 @@ public class WizardHandler {
         Utils.pause();
     }
 
-    // ---------------- TIME SLOW ----------------
-    private static void trialOfTime(Player player, Scanner input) {
+    /**
+     * Runs the Trial of Time.
+     * The player must defeat a summoned enemy in combat
+     * to unlock the Time Slow spell.
+     *
+     * @param player the player completing the trial
+     * @param input  scanner used for player input
+     */
+    private static void trialOfTime(Player player, Scanner input) { // Polymorphism
         if (slowUnlocked) {
             System.out.println("The wizard says: \"Time already bends for you.\"");
             Utils.pause();
             return;
         }
 
-        System.out.println(
-                "WIZARD: \"Time does not yield easily.\"");
-        System.out.println(
-                "A creature from between moments will be summoned.");
-        System.out.println(
-                "Do you wish to face the Trial of Time? (y/n)");
+        System.out.println("WIZARD: \"Time does not yield easily.\"");
+        System.out.println("A creature from between moments will be summoned.");
+        System.out.println("Do you wish to face the Trial of Time? (y/n)");
         System.out.print("> ");
 
         String choice = input.nextLine().trim().toLowerCase();
@@ -155,8 +183,8 @@ public class WizardHandler {
 
         Utils.clear();
 
-        Enemy wisp = new Enemy("Temporal Wisp", 75, 16);
-        int result = BattleSystem.fight(player, wisp, input);
+        Enemy wisp = new Enemy("Temporal Wisp", 75, 16); // Classes
+        int result = BattleSystem.fight(player, wisp, input); // Polymorphism
 
         if (result == 0) {
             slowUnlocked = true;
@@ -171,17 +199,43 @@ public class WizardHandler {
         }
     }
 
-    // -------- SPELL CHECKERS (used by BattleSystem) --------
-
+    /**
+     * Checks whether the Fire Bolt spell has been unlocked.
+     *
+     * @return true if Fire Bolt is unlocked
+     */
     public static boolean hasFireBolt() {
         return fireUnlocked;
     }
 
+    /**
+     * Checks whether the Healing Light spell has been unlocked.
+     *
+     * @return true if Healing Light is unlocked
+     */
     public static boolean hasHealingLight() {
         return healUnlocked;
     }
 
+    /**
+     * Checks whether the Time Slow spell has been unlocked.
+     *
+     * @return true if Time Slow is unlocked
+     */
     public static boolean hasTimeSlow() {
         return slowUnlocked;
+    }
+
+    /**
+     * Loads saved spell unlock states.
+     *
+     * @param fire whether Fire Bolt is unlocked
+     * @param heal whether Healing Light is unlocked
+     * @param slow whether Time Slow is unlocked
+     */
+    public static void loadSpells(boolean fire, boolean heal, boolean slow) { // Classes
+        fireUnlocked = fire;
+        healUnlocked = heal;
+        slowUnlocked = slow;
     }
 }

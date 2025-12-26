@@ -33,7 +33,8 @@ public class Player extends Character implements Saveable {
 
     /**
      * Constructs a Player with default stats.
-     * Initializes health, attack power, and inventory.
+     * Sets max health, current health, attack power,
+     * and initializes the inventory.
      */
     // [Classes]
     public Player() {
@@ -66,7 +67,7 @@ public class Player extends Character implements Saveable {
     // [Overriding]
     @Override
     public void takeTurn(Player player) {
-        // Player actions are handled via input, not automatic turns
+        // not used
     }
 
     /**
@@ -81,7 +82,7 @@ public class Player extends Character implements Saveable {
     /**
      * Converts player data into a savable string format.
      *
-     * @return a string containing health and attack values
+     * @return a comma-separated string of health and attack values
      */
     // [File I/O]
     @Override

@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Scanner;
 
 import game.inventory.Saveable;
+import game.ui.WizardHandler;
 import game.util.Utils;
 import game.characters.Player;
 
@@ -33,8 +34,8 @@ public class SaveManager {
      *
      * @param currentRoom the index of the current room
      * @param chestOpened whether the chest has been opened
-     * @param player the player object implementing Saveable
-     * @param inventory the inventory object implementing Saveable
+     * @param player      the player object implementing Saveable
+     * @param inventory   the inventory object implementing Saveable
      */
     // [File I/O]
     // [Abstract classes and interfaces]
@@ -48,6 +49,12 @@ public class SaveManager {
             writer.println(currentRoom);
             writer.println(chestOpened);
             writer.println(player.saveData());
+
+            writer.println(
+                    WizardHandler.hasFireBolt() + "," +
+                            WizardHandler.hasHealingLight() + "," +
+                            WizardHandler.hasTimeSlow());
+
             writer.print(inventory.saveData());
 
             System.out.println("\nGame saved successfully!");
@@ -81,6 +88,12 @@ public class SaveManager {
 
             String[] stats = reader.nextLine().split(",");
             int health = Integer.parseInt(stats[0]);
+
+            String[] spells = reader.nextLine().split(",");
+            WizardHandler.loadSpells(
+                    Boolean.parseBoolean(spells[0]),
+                    Boolean.parseBoolean(spells[1]),
+                    Boolean.parseBoolean(spells[2]));
 
             player.setHealth(health);
             player.getInventory().getItems().clear();

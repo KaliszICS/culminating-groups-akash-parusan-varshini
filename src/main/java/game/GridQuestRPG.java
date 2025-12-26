@@ -31,26 +31,29 @@ import game.save.SaveManager;
  * @author Varshini B.
  * @version 1.0
  */
-// [Classes]
-public class GridQuestRPG {
+
+public class GridQuestRPG { // Classes
 
     private static boolean sentinelDefeated = false;
     private static Scanner input = new Scanner(System.in);
     private static ArrayList<Room> map = new ArrayList<>();
+    // Classes
+
     private static Player player;
     private static int currentRoom = 0;
     private static boolean chestOpened = false;
     private static ArrayList<Riddle> riddles;
-    private static WorldMap worldMap = new WorldMap(); // [2-D arrays]
+    private static WorldMap worldMap = new WorldMap();
+    // 2-D arrays
 
     /**
-     * Program entry point.
-     * Initializes the player, world, riddles, and starts the game loop.
-     *
-     * @param args command-line arguments (unused)
+     * Launches the game.
+     * Initializes the player, displays the start menu and introduction,
+     * builds the game world, loads riddles, and enters the main game loop.
      */
+
     // [Classes]
-    public static void main(String[] args) {
+    public static void main(String[] args) { // Classes
         player = new Player();
         GameMenus.showStartMenu(input);
         GameMenus.playIntro();
@@ -60,15 +63,17 @@ public class GridQuestRPG {
     }
 
     /**
-     * Main game loop that continuously processes user input
-     * and updates game state.
+     * Controls the main runtime loop of the game.
+     * Continuously displays the current room, processes player commands,
+     * handles movement, combat, interactions, saving/loading, and updates
+     * the game state until the player quits.
      */
-    // [Classes]
-    private static void gameLoop() {
+    private static void gameLoop() { // Classes
         boolean redraw = true;
 
         while (true) {
             Room room = map.get(currentRoom);
+            // Classes
 
             if (redraw) {
                 Utils.clear();
@@ -79,36 +84,34 @@ public class GridQuestRPG {
             System.out.print("> ");
             String cmd = input.nextLine().toLowerCase().trim();
 
-            // Quit game
             if (cmd.equals("quit"))
                 return;
 
-            // Help menu
             if (cmd.equals("help")) {
                 GameMenus.showHelpMenu();
                 redraw = true;
                 continue;
             }
 
-            // Inventory menu
             if (cmd.equals("inventory") || cmd.equals("i") || cmd.equals("items")) {
                 InventoryMenu.open(player, input);
+                // Abstract classes and interfaces
                 redraw = true;
                 continue;
             }
 
-            // Chest interaction
             if (cmd.equals("open") || cmd.equals("open chest") || cmd.equals("chest")) {
                 chestOpened = ChestHandler.tryOpen(room, player, riddles, input, chestOpened);
+                // Searching
                 redraw = true;
                 continue;
             }
 
-            // Combat system
             if (cmd.equals("attack")) {
                 if (room.hasEnemy()) {
                     Enemy enemy = room.getEnemy();
-                    int result = BattleSystem.fight(player, enemy, input); // [Polymorphism]
+                    int result = BattleSystem.fight(player, enemy, input);
+                    // Polymorphism
 
                     if (result == 1) {
                         if (currentRoom == 0) {
@@ -120,6 +123,7 @@ public class GridQuestRPG {
                         redraw = true;
                         continue;
                     }
+
                     if (result == -1) {
                         System.out.println("GAME OVER.");
                         return;
@@ -148,16 +152,16 @@ public class GridQuestRPG {
                 continue;
             }
 
-            // Save game
             if (cmd.equals("save")) {
-                SaveManager.saveGame(currentRoom, chestOpened, player, player.getInventory()); // [File I/O]
+                SaveManager.saveGame(currentRoom, chestOpened, player, player.getInventory());
+                // File I/O
                 redraw = true;
                 continue;
             }
 
-            // Load game
             if (cmd.equals("load")) {
-                int[] data = SaveManager.loadGame(player); // [File I/O]
+                int[] data = SaveManager.loadGame(player);
+                // File I/O
                 if (data != null) {
                     currentRoom = data[0];
                     chestOpened = data[1] == 1;
@@ -166,19 +170,19 @@ public class GridQuestRPG {
                 continue;
             }
 
-            // World map
             if (cmd.equals("map")) {
                 Utils.clear();
-                worldMap.display(currentRoom); // [2-D arrays]
+                worldMap.display(currentRoom);
+                // 2-D arrays
                 Utils.pause();
                 redraw = true;
                 continue;
             }
 
-            // Gambling mini-game
             if (cmd.equals("gamble")) {
                 if (room.getName().contains("Tavern")) {
-                    GambleGame.play(player, input); // [Recursion]
+                    GambleGame.play(player, input);
+                    // Recursion
                 } else {
                     System.out.println("No gambling equipment here.");
                     Utils.pause();
@@ -188,20 +192,20 @@ public class GridQuestRPG {
                 continue;
             }
 
-            // Wizard Interaction
             if (cmd.equals("talk") && room.getName().equals("The Arcane Study")) {
                 WizardHandler.interact(player, input);
+                // Classes
                 redraw = true;
                 continue;
             }
 
-            // Movement
             if (cmd.startsWith("go ")) {
                 String dir = cmd.substring(3).trim();
 
                 if (room.getName().equals("The Forgotten Road") && dir.equals("up")) {
                     if (!sentinelDefeated) {
                         sentinelDefeated = SentinelBattle.fight(player, input);
+                        // Polymorphism
                     } else {
                         System.out.println("\nOnly silence remains beyond the fog.");
                         Utils.pause();
@@ -211,11 +215,15 @@ public class GridQuestRPG {
                 }
 
                 if (room.hasEnemy()) {
-                    System.out.println("The enemy blocks the way!");
-                    continue;
+                    if (room.getName().equals("The Forgotten Road") && dir.equals("down")) {
+                    } else {
+                        System.out.println("The enemy blocks the way!");
+                        continue;
+                    }
                 }
 
                 int nextRoomIndex = room.getExit(dir);
+                // Searching
                 if (nextRoomIndex >= 0) {
                     currentRoom = nextRoomIndex;
                     redraw = true;
@@ -237,8 +245,7 @@ public class GridQuestRPG {
      * @param fileName the name of the file to load
      * @return an array of strings representing the art
      */
-    // [File I/O]
-    public static String[] loadArtFromFile(String fileName) {
+    public static String[] loadArtFromFile(String fileName) { // File I/O
         ArrayList<String> lines = new ArrayList<>();
         java.io.File file = new java.io.File(fileName);
 

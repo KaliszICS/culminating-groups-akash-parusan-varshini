@@ -1,7 +1,6 @@
 package game.characters;
 
 import java.util.Random;
-import game.util.Utils;
 
 /**
  * The Sentinel class represents the boss enemy in the game.
@@ -60,6 +59,5 @@ public class Sentinel extends Enemy {
 
         player.takeDamage(damage);
         System.out.println("\nThe Sentinel smashes you for " + damage + "!");
-        Utils.pause();
     }
 }

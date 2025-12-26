@@ -1,9 +1,9 @@
 1
 true
-100,15
+92,15
+true,true,true
 Potion
 Potion
-Apple
 Potion
 Potion
 Potion
