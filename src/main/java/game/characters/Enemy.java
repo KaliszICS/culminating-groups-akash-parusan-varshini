@@ -21,7 +21,7 @@ public class Enemy extends Character {
     /**
      * Constructs an Enemy with a name, health, and attack power.
      *
-     * @param name the name of the enemy
+     * @param name   the name of the enemy
      * @param health the starting and maximum health of the enemy
      * @param attack the attack damage of the enemy
      */
@@ -43,8 +43,17 @@ public class Enemy extends Character {
      */
     @Override
     public void takeTurn(Player player) {
-        player.takeDamage(attack);
-        System.out.println("\nThe " + name + " strikes for " + attack + " damage!");
+        int dmg;
+        if (name.equals("Temporal Wisp")) {
+            int min = attack - 6; 
+            int max = attack; // 22
+            dmg = min + (int) (Math.random() * (max - min + 1));
+        } else {
+            dmg = attack;
+        }
+
+        player.takeDamage(dmg);
+        System.out.println("\nThe " + name + " strikes for " + dmg + " damage!");
     }
 
     /**

@@ -37,7 +37,7 @@ public class Room {
     /**
      * Constructs a Room with a name and description.
      *
-     * @param name the name of the room
+     * @param name        the name of the room
      * @param description the description shown to the player
      */
     // [Classes]
@@ -147,15 +147,20 @@ public class Room {
         }
 
         // Show available exits
-        System.out.println("\nExits: " + exits.keySet());
+        if (hasEnemy()) {
+            System.out.println("\nExits: (blocked)");
+        } else {
+            System.out.println("\nExits: " + exits.keySet());
+        }
 
-        String commands =
-            "go <up|down|left|right>, attack, inventory, map, save, load, help, quit";
+        String commands = "go <up|down|left|right>, attack, inventory, map, save, load, help, quit";
 
         if (name.equals("The Lucky Tavern")) {
             commands += ", gamble";
         } else if (name.equals("Abandoned Storage")) {
             commands += ", open chest";
+        } else if (name.equals("The Arcane Study")) {
+            commands += ", talk";
         }
 
         System.out.println("Commands: " + commands);

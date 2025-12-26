@@ -4,6 +4,7 @@ import java.util.Scanner;
 import game.util.Utils;
 import game.characters.Player;
 import game.characters.Enemy;
+import game.ui.WizardHandler;
 
 /**
  * The BattleSystem class manages turn-based combat between the player
@@ -29,13 +30,16 @@ public class BattleSystem {
      * is defeated, or the player chooses to run.
      *
      * @param player the player participating in the fight
-     * @param enemy the enemy being fought
-     * @param input the scanner used for user input
+     * @param enemy  the enemy being fought
+     * @param input  the scanner used for user input
      * @return 0 if enemy is defeated, 1 if player runs, -1 if player dies
      */
     // [Classes]
     // [Polymorphism]
     public static int fight(Player player, Enemy enemy, Scanner input) {
+        boolean healingUsed = false;
+        boolean timeSlowActive = false;
+        boolean fireBoltActive = false;
 
         while (player.isAlive() && enemy.isAlive()) {
             Utils.clear();
@@ -44,6 +48,10 @@ public class BattleSystem {
             System.out.println("[1] Attack");
             System.out.println("[2] Use Item");
             System.out.println("[3] Run");
+            if (WizardHandler.hasFireBolt() || WizardHandler.hasHealingLight() || WizardHandler.hasTimeSlow()) {
+                System.out.println("[4] Cast Spell");
+            }
+
             System.out.print("> ");
 
             String choice = input.nextLine().trim();
@@ -51,13 +59,21 @@ public class BattleSystem {
 
             // ---------- PLAYER TURN ----------
             if (choice.equals("1")) {
+
                 int dmg = player.getAttack();
+
+                if (fireBoltActive) {
+                    dmg += 10;
+                    fireBoltActive = false; // consumed after one attack
+                }
+
                 System.out.println("\nYou attack for " + dmg + " damage!");
                 enemy.takeDamage(dmg);
                 turnConsumed = true;
                 Utils.pause();
+            }
 
-            } else if (choice.equals("2")) {
+            else if (choice.equals("2")) {
 
                 if (player.getHealth() >= player.getMaxHealth()) {
                     System.out.println("\nAlready at max health!");
@@ -101,7 +117,73 @@ public class BattleSystem {
                 Utils.pause();
                 return 1;
 
-            } else {
+            } else if (choice.equals("4")) {
+
+                System.out.println("\n[1] Fire Bolt");
+                System.out.println("[2] Healing Light");
+                System.out.println("[3] Time Slow");
+                System.out.print("> ");
+
+                String spell = input.nextLine().trim();
+
+                // -------- HEALING LIGHT --------
+                if (spell.equals("2")) {
+
+                    if (!WizardHandler.hasHealingLight()) {
+                        System.out.println("You have not learned that spell.");
+
+                    } else if (healingUsed) {
+                        System.out.println("Healing Light has already been used.");
+
+                    } else {
+                        player.setHealth(player.getMaxHealth());
+                        healingUsed = true;
+                        turnConsumed = true;
+                        System.out.println("\nHealing Light restores you completely!");
+                    }
+
+                    Utils.pause();
+                }
+
+                // -------- TIME SLOW --------
+                else if (spell.equals("3")) {
+
+                    if (!WizardHandler.hasTimeSlow()) {
+                        System.out.println("You have not learned that spell.");
+
+                    } else if (timeSlowActive) {
+                        System.out.println("Time is already distorted.");
+
+                    } else {
+                        timeSlowActive = true;
+                        turnConsumed = true;
+                        System.out.println("\nTime slows around your enemy!");
+                    }
+
+                    Utils.pause();
+                }
+
+                // -------- FIRE BOLT --------
+                else if (spell.equals("1")) {
+
+                    if (!WizardHandler.hasFireBolt()) {
+                        System.out.println("You have not learned that spell.");
+
+                    } else if (fireBoltActive) {
+                        System.out.println("Fire Bolt is already primed.");
+
+                    } else {
+                        fireBoltActive = true;
+                        turnConsumed = true;
+                        System.out.println("\nFlames gather around your weapon!");
+                    }
+
+                    Utils.pause();
+                }
+
+            }
+
+            else {
                 System.out.println("\nInvalid choice.");
                 Utils.pause();
                 continue;
@@ -109,9 +191,17 @@ public class BattleSystem {
 
             // ---------- ENEMY TURN ----------
             if (turnConsumed && enemy.isAlive()) {
-                enemy.takeTurn(player); // [Polymorphism]
-                Utils.pause();
+
+                if (timeSlowActive) {
+                    System.out.println("\nThe enemy is frozen in time!");
+                    timeSlowActive = false;
+                    Utils.pause();
+                } else {
+                    enemy.takeTurn(player); // [Polymorphism]
+                    Utils.pause();
+                }
             }
+
         }
 
         return player.isAlive() ? 0 : -1;

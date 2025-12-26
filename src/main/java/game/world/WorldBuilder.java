@@ -38,13 +38,13 @@ public class WorldBuilder {
 
         // Room 1: Town Square
         Room r1 = new Room(
-            "Town Square",
-            "The town center. Left: Tavern, Right: Storage, Up: The Forgotten Road."
-        );
+                "Town Square",
+                "The town center. Left: Tavern, Right: Storage, Up: The Forgotten Road.");
         r1.setArt(GridQuestRPG.loadArtFromFile("town_art.txt")); // [File I/O]
         r1.addExit("right", 2);
         r1.addExit("left", 3);
         r1.addExit("up", 4);
+        r1.addExit("down", 5);
         map.add(r1);
 
         // Room 2: Abandoned Storage
@@ -61,12 +61,20 @@ public class WorldBuilder {
 
         // Room 4: The Forgotten Road
         Room r4 = new Room(
-            "The Forgotten Road",
-            "The path ahead is clear and silent. Something massive watches from beyond the fog."
-        );
+                "The Forgotten Road",
+                "The path ahead is clear and silent. Something massive watches from beyond the fog.");
         r4.setArt(GridQuestRPG.loadArtFromFile("road_art.txt")); // [File I/O]
         r4.addExit("down", 1);
         r4.addExit("up", -1);
         map.add(r4);
+
+        // Room 5: The Arcane Study
+        Room r5 = new Room(
+                "The Arcane Study",
+                "A robed wizard watches you closely. Ancient magic fills the room.");
+        r5.setArt(GridQuestRPG.loadArtFromFile("wizard_art.txt")); // File I/O
+        r5.addExit("up", 1);
+        map.add(r5);
+
     }
 }

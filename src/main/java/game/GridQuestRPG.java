@@ -11,6 +11,7 @@ import game.world.WorldBuilder;
 import game.world.WorldMap;
 import game.ui.ChestHandler;
 import game.ui.GameMenus;
+import game.ui.WizardHandler;
 import game.util.Utils;
 import game.combat.BattleSystem;
 import game.combat.SentinelBattle;
@@ -141,6 +142,8 @@ public class GridQuestRPG {
 
                 } else {
                     System.out.println("Nothing to fight here.");
+                    Utils.pause();
+                    redraw = true;
                 }
                 continue;
             }
@@ -178,7 +181,16 @@ public class GridQuestRPG {
                     GambleGame.play(player, input); // [Recursion]
                 } else {
                     System.out.println("No gambling equipment here.");
+                    Utils.pause();
+                    redraw = true;
                 }
+                redraw = true;
+                continue;
+            }
+
+            // Wizard Interaction
+            if (cmd.equals("talk") && room.getName().equals("The Arcane Study")) {
+                WizardHandler.interact(player, input);
                 redraw = true;
                 continue;
             }
@@ -214,6 +226,8 @@ public class GridQuestRPG {
             }
 
             System.out.println("Unknown command.");
+            Utils.pause();
+            redraw = true;
         }
     }
 

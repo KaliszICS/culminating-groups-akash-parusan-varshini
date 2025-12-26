@@ -27,7 +27,7 @@ public class WorldMap {
      */
     // [2-D arrays]
     public WorldMap() {
-        grid = new String[4][3];
+        grid = new String[5][3];
 
         // Initialize empty tiles
         for (int i = 0; i < grid.length; i++) {
@@ -42,7 +42,8 @@ public class WorldMap {
         grid[2][1] = "[T]"; // Town
         grid[2][0] = "[V]"; // Tavern
         grid[2][2] = "[S]"; // Storage
-        grid[3][1] = "[F]"; // Forest
+        grid[3][1] = "[N]"; // Spells room
+        grid[4][1] = "[F]"; // Forest moved down
     }
 
     /**
@@ -69,26 +70,32 @@ public class WorldMap {
 
         // Display legend
         System.out.println(
-            "P: Player | F: Forest | T: Town | V: Tavern | S: Storage | R: Road | C: Castle"
-        );
+                "P: Player | F: Forest | T: Town | V: Tavern | S: Storage | R: Road | C: Castle | N: The Arcane Study");
     }
 
     /**
      * Determines whether a given grid position
      * corresponds to the player's current room.
      *
-     * @param r grid row
-     * @param c grid column
+     * @param r     grid row
+     * @param c     grid column
      * @param index current room index
      * @return true if the position matches the player's location
      */
     // [2-D arrays]
     private boolean isCurrentRoom(int r, int c, int index) {
-        if (index == 0 && r == 3 && c == 1) return true; // Forest
-        if (index == 1 && r == 2 && c == 1) return true; // Town
-        if (index == 2 && r == 2 && c == 2) return true; // Storage
-        if (index == 3 && r == 2 && c == 0) return true; // Tavern
-        if (index == 4 && r == 1 && c == 1) return true; // Road
+        if (index == 0 && r == 4 && c == 1)
+            return true; // Forest
+        if (index == 1 && r == 2 && c == 1)
+            return true; // Town
+        if (index == 2 && r == 2 && c == 2)
+            return true; // Storage
+        if (index == 3 && r == 2 && c == 0)
+            return true; // Tavern
+        if (index == 4 && r == 1 && c == 1)
+            return true; // Road
+        if (index == 5 && r == 3 && c == 1) 
+            return true; // Arcane Study
         return false;
     }
 }
