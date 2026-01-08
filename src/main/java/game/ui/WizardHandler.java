@@ -204,7 +204,7 @@ public class WizardHandler { // Classes
      *
      * @return true if Fire Bolt is unlocked
      */
-    public static boolean hasFireBolt() {
+    public static boolean getFireBolt() {
         return fireUnlocked;
     }
 
@@ -213,7 +213,7 @@ public class WizardHandler { // Classes
      *
      * @return true if Healing Light is unlocked
      */
-    public static boolean hasHealingLight() {
+    public static boolean getHealingLight() {
         return healUnlocked;
     }
 
@@ -222,7 +222,7 @@ public class WizardHandler { // Classes
      *
      * @return true if Time Slow is unlocked
      */
-    public static boolean hasTimeSlow() {
+    public static boolean getTimeSlow() {
         return slowUnlocked;
     }
 
@@ -233,7 +233,7 @@ public class WizardHandler { // Classes
      * @param heal whether Healing Light is unlocked
      * @param slow whether Time Slow is unlocked
      */
-    public static void loadSpells(boolean fire, boolean heal, boolean slow) { // Classes
+    public static void setSpells(boolean fire, boolean heal, boolean slow) { // Classes
         fireUnlocked = fire;
         healUnlocked = heal;
         slowUnlocked = slow;

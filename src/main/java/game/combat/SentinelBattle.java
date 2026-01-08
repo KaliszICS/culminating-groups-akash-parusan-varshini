@@ -115,8 +115,7 @@ public class SentinelBattle { // Classes
 
                     String spell = input.nextLine().trim();
 
-                    if (spell.equals("1") && WizardHandler.hasFireBolt()) {
-                        // Searching
+                    if (spell.equals("1") && WizardHandler.getFireBolt()) {
 
                         if (fireBoltUsed) {
                             System.out.println("\nThe flames have already been spent.");
@@ -131,8 +130,7 @@ public class SentinelBattle { // Classes
                         continue;
                     }
 
-                    if (spell.equals("2") && WizardHandler.hasHealingLight()) {
-                        // Searching
+                    if (spell.equals("2") && WizardHandler.getHealingLight()) {
 
                         if (!healingUsed) {
                             player.setHealth(player.getMaxHealth());
@@ -146,8 +144,7 @@ public class SentinelBattle { // Classes
                         continue;
                     }
 
-                    if (spell.equals("3") && WizardHandler.hasTimeSlow()) {
-                        // Searching
+                    if (spell.equals("3") && WizardHandler.getTimeSlow()) {
 
                         if (timeSlowUsed) {
                             System.out.println("\nTime refuses to bend again.");

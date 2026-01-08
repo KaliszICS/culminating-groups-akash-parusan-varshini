@@ -48,9 +48,9 @@ public class BattleSystem { // Classes
             System.out.println("[1] Attack");
             System.out.println("[2] Use Item");
             System.out.println("[3] Run");
-            if (WizardHandler.hasFireBolt()
-                    || WizardHandler.hasHealingLight()
-                    || WizardHandler.hasTimeSlow()) {
+            if (WizardHandler.getFireBolt()
+                    || WizardHandler.getHealingLight()
+                    || WizardHandler.getTimeSlow()) {
                 System.out.println("[4] Cast Spell");
             }
 
@@ -145,7 +145,7 @@ public class BattleSystem { // Classes
 
                 if (spell.equals("2")) {
 
-                    if (!WizardHandler.hasHealingLight()) {
+                    if (!WizardHandler.getHealingLight()) {
                         System.out.println("You have not learned that spell.");
                         // Searching
 
@@ -164,7 +164,7 @@ public class BattleSystem { // Classes
 
                 else if (spell.equals("3")) {
 
-                    if (!WizardHandler.hasTimeSlow()) {
+                    if (!WizardHandler.getTimeSlow()) {
                         System.out.println("You have not learned that spell.");
                         // Searching
 
@@ -181,7 +181,7 @@ public class BattleSystem { // Classes
 
                 else if (spell.equals("1")) {
 
-                    if (!WizardHandler.hasFireBolt()) {
+                    if (!WizardHandler.getFireBolt()) {
                         System.out.println("You have not learned that spell.");
                         // Searching
 

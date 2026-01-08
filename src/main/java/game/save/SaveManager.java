@@ -51,9 +51,9 @@ public class SaveManager {
             writer.println(player.saveData());
 
             writer.println(
-                    WizardHandler.hasFireBolt() + "," +
-                            WizardHandler.hasHealingLight() + "," +
-                            WizardHandler.hasTimeSlow());
+                    WizardHandler.getFireBolt() + "," +
+                            WizardHandler.getHealingLight() + "," +
+                            WizardHandler.getTimeSlow());
 
             writer.print(inventory.saveData());
 
@@ -90,7 +90,7 @@ public class SaveManager {
             int health = Integer.parseInt(stats[0]);
 
             String[] spells = reader.nextLine().split(",");
-            WizardHandler.loadSpells(
+            WizardHandler.setSpells(
                     Boolean.parseBoolean(spells[0]),
                     Boolean.parseBoolean(spells[1]),
                     Boolean.parseBoolean(spells[2]));
