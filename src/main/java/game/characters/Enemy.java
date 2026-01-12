@@ -45,7 +45,7 @@ public class Enemy extends Character {
     public void takeTurn(Player player) {
         int dmg;
         if (name.equals("Temporal Wisp")) {
-            int min = attack - 6; 
+            int min = attack - 6;
             int max = attack; // 22
             dmg = min + (int) (Math.random() * (max - min + 1));
         } else {
