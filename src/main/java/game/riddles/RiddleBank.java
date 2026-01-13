@@ -56,7 +56,7 @@ public class RiddleBank {
      * until the base case is reached.
      *
      * @param list the list of riddles to shuffle
-     * @param n the number of elements remaining to shuffle
+     * @param n    the number of elements remaining to shuffle
      */
     // [Recursion]
     private static void shuffle(ArrayList<Riddle> list, int n) {

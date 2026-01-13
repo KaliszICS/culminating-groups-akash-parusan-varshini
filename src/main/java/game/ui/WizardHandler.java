@@ -21,7 +21,27 @@ import game.util.Utils;
  * @version 1.0
  */
 public class WizardHandler { // Classes
+    /**
+     * The starting and maximum health value for the Temporal Wisp summoned in the
+     * Trial of Time.
+     */
+    private static final int TEMPORAL_WISP_HEALTH = 75;
 
+    /**
+     * The base attack damage for the Temporal Wisp summoned in the Trial of Time.
+     */
+    private static final int TEMPORAL_WISP_ATTACK = 16;
+
+    /**
+     * Number of riddles the player must answer correctly to unlock the Fire Bolt
+     * spell.
+     */
+    private static final int FLAME_TRIAL_RIDDLES_REQUIRED = 2;
+
+    /**
+     * Number of potions the player must donate to unlock the Healing Light spell.
+     */
+    private static final int HEALING_TRIAL_POTIONS_REQUIRED = 2;
     private static boolean fireUnlocked = false;
     private static boolean healUnlocked = false;
     private static boolean slowUnlocked = false;
@@ -92,7 +112,7 @@ public class WizardHandler { // Classes
         ArrayList<Riddle> riddles = RiddleBank.load(); // File I/O
         RiddleBank.shuffle(riddles); // Sorting
 
-        for (int i = 0; i < 2; i++) { // Iteration
+        for (int i = 0; i < FLAME_TRIAL_RIDDLES_REQUIRED; i++) { // Iteration
             Riddle r = riddles.get(i);
 
             System.out.println("\nRiddle " + (i + 1) + ":");
@@ -138,7 +158,7 @@ public class WizardHandler { // Classes
             return;
         }
 
-        for (int i = 0; i < 2; i++) { // Iteration
+        for (int i = 0; i < HEALING_TRIAL_POTIONS_REQUIRED; i++) { // Iteration
             if (!player.getInventory().usePotion(player)) {
                 System.out.println("You do not have enough Potions.");
                 Utils.pause();
@@ -183,7 +203,7 @@ public class WizardHandler { // Classes
 
         Utils.clear();
 
-        Enemy wisp = new Enemy("Temporal Wisp", 75, 16); // Classes
+        Enemy wisp = new Enemy("Temporal Wisp", TEMPORAL_WISP_HEALTH, TEMPORAL_WISP_ATTACK); // Classes
         int result = BattleSystem.fight(player, wisp, input); // Polymorphism
 
         if (result == 0) {

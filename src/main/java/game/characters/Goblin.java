@@ -12,6 +12,8 @@ package game.characters;
 // [Classes]
 // [Inheritance]
 public class Goblin extends Enemy {
+    private static final int GOBLIN_HEALTH = 40;
+    private static final int GOBLIN_ATTACK = 10;
 
     /**
      * Constructs a Goblin with fixed stats.
@@ -19,6 +21,6 @@ public class Goblin extends Enemy {
      */
     // [Inheritance]
     public Goblin() {
-        super("Goblin", 40, 10);
+        super("Goblin", GOBLIN_HEALTH, GOBLIN_ATTACK);
     }
 }

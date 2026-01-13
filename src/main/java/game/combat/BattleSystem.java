@@ -19,6 +19,10 @@ import game.characters.Sentinel;
  * @version 1.0
  */
 public class BattleSystem { // Classes
+    /** Maximum damage the player can deal to the Sentinel when using the basic Attack option. */
+    private static final int SENTINEL_PLAYER_MAX_DAMAGE = 20;
+    /** Minimum damage the player can deal to the Sentinel when using the basic Attack option. */
+    private static final int SENTINEL_PLAYER_MIN_DAMAGE = 10;
 
     /**
      * Runs a turn-based fight between a player and an enemy.
@@ -64,8 +68,8 @@ public class BattleSystem { // Classes
                 int dmg;
 
                 if (enemy instanceof Sentinel) {
-                    dmg = (int) (Math.random() * 11) + 10;
-                    // Inheritance
+                    int range = SENTINEL_PLAYER_MAX_DAMAGE - SENTINEL_PLAYER_MIN_DAMAGE + 1;
+                    dmg = (int) (Math.random() * range) + SENTINEL_PLAYER_MIN_DAMAGE;
                 } else {
                     dmg = player.getAttack();
                 }

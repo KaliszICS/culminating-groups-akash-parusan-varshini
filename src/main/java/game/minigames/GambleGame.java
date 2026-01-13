@@ -17,13 +17,21 @@ import game.characters.Player;
 // [Classes]
 // [Recursion]
 public class GambleGame {
+    /** Minimum possible card value in the Higher/Lower gambling mini-game. */
+    private static final int CARD_MIN = 1;
+
+    /** Maximum possible card value in the Higher/Lower gambling mini-game. */
+    private static final int CARD_MAX = 10;
+
+    /** Multiplier applied when the player wins a round (double-or-nothing). */
+    private static final int DOUBLE_MULTIPLIER = 2;
 
     /**
      * Starts the gambling mini-game.
      * The player must have at least one potion to participate.
      *
      * @param player the player participating in the gamble
-     * @param input the scanner used for user input
+     * @param input  the scanner used for user input
      */
     // [Classes]
     public static void play(Player player, Scanner input) {
@@ -35,8 +43,7 @@ public class GambleGame {
         }
 
         System.out.println(
-            "The dealer eyes your bag. He smirks, asking 'Will you wager 1 potion for a chance at 2?' (y/n)"
-        );
+                "The dealer eyes your bag. He smirks, asking 'Will you wager 1 potion for a chance at 2?' (y/n)");
 
         if (input.nextLine().equalsIgnoreCase("y")) {
             gambleRound(player, input, 1); // [Recursion]
@@ -49,25 +56,25 @@ public class GambleGame {
      * calls itself with a doubled wager.
      *
      * @param player the player gambling
-     * @param input the scanner used for user input
-     * @param wager the current wager amount
+     * @param input  the scanner used for user input
+     * @param wager  the current wager amount
      */
     // [Recursion]
     private static void gambleRound(Player player, Scanner input, int wager) {
-        int cur = (int) (Math.random() * 10) + 1;
-        int next = (int) (Math.random() * 10) + 1;
+        int cur = randomInRange(CARD_MIN, CARD_MAX);
+        int next = randomInRange(CARD_MIN, CARD_MAX);
 
         System.out.println("\nDealer shows: [" + cur + "]. Next card Higher or Lower? (h/l)");
         String choice = input.nextLine().toLowerCase().trim();
 
         if ((choice.equals("h") && next >= cur) || (choice.equals("l") && next <= cur)) {
-            System.out.println("Win! Card was " + next + ". Total: " + (wager * 2) + " potions.");
+            System.out.println("Win! Card was " + next + ". Total: " + (wager * DOUBLE_MULTIPLIER) + " potions.");
             System.out.println("Double or nothing? (y/n)");
 
             if (input.nextLine().equalsIgnoreCase("y")) {
-                gambleRound(player, input, wager * 2); // [Recursion]
+                gambleRound(player, input, wager * DOUBLE_MULTIPLIER); // [Recursion]
             } else {
-                player.getInventory().addMultipleItems("Potion", (wager * 2) - 1);
+                player.getInventory().addMultipleItems("Potion", (wager * DOUBLE_MULTIPLIER) - 1);
                 System.out.println("Winnings added. Press Enter to continue...");
                 input.nextLine();
             }
@@ -78,4 +85,16 @@ public class GambleGame {
             input.nextLine();
         }
     }
+
+    /**
+     * Generates a random integer in the inclusive range [min, max].
+     *
+     * @param min the minimum value (inclusive)
+     * @param max the maximum value (inclusive)
+     * @return a random integer between min and max, inclusive
+     */
+    private static int randomInRange(int min, int max) {
+        return min + (int) (Math.random() * (max - min + 1));
+    }
+
 }

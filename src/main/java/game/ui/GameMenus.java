@@ -38,9 +38,12 @@ public class GameMenus {
 
             String choice = input.nextLine();
 
-            if (choice.equals("1")) return;
-            if (choice.equals("2")) showHelpMenu();
-            if (choice.equals("3")) System.exit(0);
+            if (choice.equals("1"))
+                return;
+            if (choice.equals("2"))
+                showHelpMenu();
+            if (choice.equals("3"))
+                System.exit(0);
         }
     }
 

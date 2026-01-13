@@ -16,7 +16,7 @@ import java.util.Scanner;
  */
 // [Classes]
 public class Utils {
-
+    private static final int BLANK_LINES = 25;
     /** Scanner used to pause execution until ENTER is pressed */
     private static Scanner pauseInput = new Scanner(System.in);
 
@@ -34,7 +34,7 @@ public class Utils {
      */
     // [Classes]
     public static void clear() {
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < BLANK_LINES; i++) {
             System.out.println();
         }
     }

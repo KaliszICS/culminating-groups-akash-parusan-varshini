@@ -28,15 +28,15 @@ public class ChestHandler {
      * A riddle is presented to the player, and rewards are
      * given only if the correct answer is provided.
      *
-     * @param room the current room the player is in
-     * @param player the player attempting to open the chest
-     * @param riddles the list of available riddles
-     * @param input scanner used for user input
+     * @param room        the current room the player is in
+     * @param player      the player attempting to open the chest
+     * @param riddles     the list of available riddles
+     * @param input       scanner used for user input
      * @param chestOpened whether the chest has already been opened
      * @return true if the chest is opened or already opened, false otherwise
      */
     // [Classes]
-    // [Recursion] (indirect use via RiddleBank.shuffle)
+    // [Recursion]
     public static boolean tryOpen(
             Room room,
             Player player,

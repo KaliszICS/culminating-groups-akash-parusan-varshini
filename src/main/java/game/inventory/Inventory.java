@@ -21,6 +21,15 @@ import java.util.ArrayList;
 // [Searching (Sequential)]
 // [Abstract classes and interfaces]
 public class Inventory implements Saveable {
+    /**
+     * The amount of health restored when a Potion is used.
+     */
+    private static final int POTION_HP = 25;
+
+    /**
+     * The amount of health restored when an Apple is used.
+     */
+    private static final int APPLE_HP = 10;
 
     /** Stores all item instances owned by the player */
     private ArrayList<String> items;
@@ -36,9 +45,9 @@ public class Inventory implements Saveable {
     public Inventory() {
         items = new ArrayList<>();
         order = new ArrayList<>();
-        
+
         items.add("Potion");
-        
+
         order.add("Potion");
         order.add("Apple");
     }
@@ -68,7 +77,7 @@ public class Inventory implements Saveable {
     public boolean usePotion(Player player) {
         if (contains("Potion")) {
             removeItem("Potion");
-            player.heal(25);
+            player.heal(POTION_HP);
             return true;
         }
         return false;
@@ -84,7 +93,7 @@ public class Inventory implements Saveable {
     public boolean useApple(Player player) {
         if (contains("Apple")) {
             removeItem("Apple");
-            player.heal(10);
+            player.heal(APPLE_HP);
             return true;
         }
         return false;
@@ -156,7 +165,7 @@ public class Inventory implements Saveable {
      * Adds multiple instances of an item to the inventory.
      *
      * @param itemName the name of the item
-     * @param count the number of items to add
+     * @param count    the number of items to add
      */
     // [Classes]
     public void addMultipleItems(String itemName, int count) {

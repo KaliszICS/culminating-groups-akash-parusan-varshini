@@ -22,6 +22,11 @@ import game.ui.WizardHandler;
  * @version 1.0
  */
 public class SentinelBattle { // Classes
+    /**
+     * The delay (in milliseconds) used between displaying lines of text to control
+     * pacing.
+     */
+    private static final int TIME_BETWEEN_TEXT = 1200;
 
     /**
      * Runs the Sentinel boss encounter.
@@ -44,15 +49,15 @@ public class SentinelBattle { // Classes
         Utils.pause();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("The road narrows. The air turns heavy...");
-            Thread.sleep(1000);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("Iron footsteps echo ahead.");
-            Thread.sleep(1000);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("A towering figure emerges from the fog.");
-            Thread.sleep(1000);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("\nTHE SENTINEL: \"Glass breaks. Iron remains.\"");
-            Thread.sleep(1000);
+            Thread.sleep(TIME_BETWEEN_TEXT);
         } catch (InterruptedException e) {
         }
 
@@ -96,7 +101,7 @@ public class SentinelBattle { // Classes
 
                 if (!choice.equals("1") && !choice.equals("2") && !choice.equals("3")) {
                     System.out.println("\nUnknown command.");
-                    Thread.sleep(1200);
+                    Thread.sleep(TIME_BETWEEN_TEXT);
                     continue;
                 }
 
@@ -119,14 +124,14 @@ public class SentinelBattle { // Classes
 
                         if (fireBoltUsed) {
                             System.out.println("\nThe flames have already been spent.");
-                            Thread.sleep(1200);
+                            Thread.sleep(TIME_BETWEEN_TEXT);
                             continue;
                         }
 
                         fireBoltPrimed = true;
                         fireBoltUsed = true;
                         System.out.println("\nFlames gather around your weapon...");
-                        Thread.sleep(1200);
+                        Thread.sleep(TIME_BETWEEN_TEXT);
                         continue;
                     }
 
@@ -136,10 +141,10 @@ public class SentinelBattle { // Classes
                             player.setHealth(player.getMaxHealth());
                             healingUsed = true;
                             System.out.println("\nHealing Light restores you completely!");
-                            Thread.sleep(1200);
+                            Thread.sleep(TIME_BETWEEN_TEXT);
                         } else {
                             System.out.println("\nHealing Light has already been used.");
-                            Thread.sleep(1200);
+                            Thread.sleep(TIME_BETWEEN_TEXT);
                         }
                         continue;
                     }
@@ -148,19 +153,19 @@ public class SentinelBattle { // Classes
 
                         if (timeSlowUsed) {
                             System.out.println("\nTime refuses to bend again.");
-                            Thread.sleep(1200);
+                            Thread.sleep(TIME_BETWEEN_TEXT);
                             continue;
                         }
 
                         timeSlowActive = true;
                         timeSlowUsed = true;
                         System.out.println("\nTime bends around the Sentinel...");
-                        Thread.sleep(1200);
+                        Thread.sleep(TIME_BETWEEN_TEXT);
                         continue;
                     }
 
                     System.out.println("\nYou have not learned that spell.");
-                    Thread.sleep(1200);
+                    Thread.sleep(TIME_BETWEEN_TEXT);
                     continue;
                 }
 
@@ -177,7 +182,7 @@ public class SentinelBattle { // Classes
                     // Polymorphism
 
                     System.out.println("\nYou strike the Sentinel for " + dmg + "!");
-                    Thread.sleep(1200);
+                    Thread.sleep(TIME_BETWEEN_TEXT);
                 }
 
                 if (sentinel.isAlive()) {
@@ -185,7 +190,7 @@ public class SentinelBattle { // Classes
                     if (timeSlowActive) {
                         System.out.println("\nThe Sentinel is frozen in time!");
                         timeSlowActive = false;
-                        Thread.sleep(1200);
+                        Thread.sleep(TIME_BETWEEN_TEXT);
 
                     } else {
                         int sDmg = (int) (Math.random() * 16) + 15;
@@ -193,7 +198,7 @@ public class SentinelBattle { // Classes
                         // Polymorphism
 
                         System.out.println("\nThe Sentinel smashes you for " + sDmg + "!");
-                        Thread.sleep(1200);
+                        Thread.sleep(TIME_BETWEEN_TEXT);
                     }
                 }
 
@@ -201,19 +206,19 @@ public class SentinelBattle { // Classes
 
             if (!player.isAlive()) {
                 System.out.println("\nYOU HAVE FALLEN.");
-                Thread.sleep(1200);
+                Thread.sleep(TIME_BETWEEN_TEXT);
                 System.exit(0);
             }
 
-            Thread.sleep(1200);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("\nTHE SENTINEL: \"You... are iron.\"");
-            Thread.sleep(1200);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("The giant shatters into cold dust.");
-            Thread.sleep(1200);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("\nYou have beaten the RPG.");
-            Thread.sleep(1200);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("But the world remains open - so feel free to explore!");
-            Thread.sleep(1200);
+            Thread.sleep(TIME_BETWEEN_TEXT);
             System.out.println("\n(Press ENTER)");
             input.nextLine();
 

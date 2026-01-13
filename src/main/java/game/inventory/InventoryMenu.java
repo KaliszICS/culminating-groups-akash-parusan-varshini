@@ -17,13 +17,14 @@ import java.util.Scanner;
  */
 // [Classes]
 public class InventoryMenu {
+    private static final int MAX_HEALTH = 100;
 
     /**
      * Opens the inventory menu and processes user input
      * until the player chooses to exit.
      *
      * @param player the current player accessing the inventory
-     * @param input the scanner used for user input
+     * @param input  the scanner used for user input
      */
     // [Classes]
     // [Sorting (Selection)]
@@ -35,8 +36,7 @@ public class InventoryMenu {
             Utils.clear();
             player.getInventory().display();
             System.out.println(
-                "\nActions: [1] Potion [2] Apple [3] Organize Bag [4] Search [5] Back"
-            );
+                    "\nActions: [1] Potion [2] Apple [3] Organize Bag [4] Search [5] Back");
             System.out.print("> ");
 
             String invCmd = input.nextLine().trim();
@@ -59,8 +59,7 @@ public class InventoryMenu {
 
                 if (index != -1) {
                     System.out.println(
-                        "'" + find + "' found in backpack slot " + (index + 1) + "."
-                    );
+                            "'" + find + "' found in backpack slot " + (index + 1) + ".");
                 } else {
                     System.out.println("Item not found in your inventory.");
                 }
@@ -80,23 +79,22 @@ public class InventoryMenu {
      * Heals the player using either a potion or an apple.
      *
      * @param player the player being healed
-     * @param input the scanner used for pauses
+     * @param input  the scanner used for pauses
      * @param potion true to use a potion, false to use an apple
      */
     // [Classes]
     // [Polymorphism] (uses Player methods inherited from Character)
     private static void heal(Player player, Scanner input, boolean potion) {
-        if (player.getHealth() >= 100) {
+        if (player.getHealth() >= MAX_HEALTH) {
             System.out.println("\nAlready at max health (100/100)!");
         } else {
             boolean success = potion
-                ? player.getInventory().usePotion(player)
-                : player.getInventory().useApple(player);
+                    ? player.getInventory().usePotion(player)
+                    : player.getInventory().useApple(player);
 
             if (success) {
                 System.out.println(
-                    "\nHealed! Current health: " + player.getHealth() + "/100"
-                );
+                        "\nHealed! Current health: " + player.getHealth() + "/100");
             } else {
                 System.out.println("\nYou don't have that item!");
             }

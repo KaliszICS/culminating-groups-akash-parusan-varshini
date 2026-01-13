@@ -24,7 +24,7 @@ public class Riddle {
      * Constructs a Riddle object with a specified question and answer.
      *
      * @param question the riddle question
-     * @param answer the correct answer to the riddle
+     * @param answer   the correct answer to the riddle
      */
     // [Classes]
     public Riddle(String question, String answer) {

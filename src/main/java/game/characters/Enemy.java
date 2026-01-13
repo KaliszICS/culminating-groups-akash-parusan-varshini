@@ -15,6 +15,9 @@ package game.characters;
  */
 public class Enemy extends Character {
 
+    /** Damage variability for the Temporal Wisp: min damage = attack - variance, max damage = attack. */
+    private static final int TEMPORAL_WISP_DAMAGE_VARIANCE = 6;
+
     /** The name of the enemy */
     private String name;
 
@@ -45,8 +48,8 @@ public class Enemy extends Character {
     public void takeTurn(Player player) {
         int dmg;
         if (name.equals("Temporal Wisp")) {
-            int min = attack - 6;
-            int max = attack; // 22
+            int min = attack - TEMPORAL_WISP_DAMAGE_VARIANCE;
+            int max = attack;
             dmg = min + (int) (Math.random() * (max - min + 1));
         } else {
             dmg = attack;
