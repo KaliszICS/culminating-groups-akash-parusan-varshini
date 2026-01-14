@@ -134,7 +134,7 @@ public class BattleSystem { // Classes
                 }
 
             } else if (choice.equals("3")) {
-                System.out.println("\nYou fled the battle!");
+                System.out.println("\nYou managed to get away safely!");
                 Utils.pause();
                 return 1;
 
