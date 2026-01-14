@@ -1,6 +1,6 @@
 package game.characters;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CharacterTest {
 
@@ -18,7 +18,32 @@ class CharacterTest {
     void testdmgTakenByPlayer(){
         Player player = new Player ();
         player.takeDamage(30);
-        assertEquals(player.getHealth(), 70);
+        assertEquals(70, player.getHealth());
     }
 
+    @Test
+    void testOverHealing() {
+        Player player = new Player();
+        player.takeDamage(60);
+        player.heal(20);
+        assertEquals(60, player.getHealth());
     }
+<<<<<<< HEAD
+=======
+    @Test
+    void testHealing() {
+        Player player = new Player();
+        player.takeDamage(20);
+        player.heal(30);
+        assertEquals(100, player.getHealth());
+    }
+    @Test
+    void testEnemyspawn(){
+        Enemy enemy = new Enemy("Sentinel", 150, 25);
+        assertEquals("Sentinel", enemy.getName());
+        assertEquals(150, enemy.getHealth());
+        assertEquals(25, enemy.getAttack());
+    }
+
+}
+>>>>>>> 4cc2f07d91ce5258b55b7a0bc0d485bc485233ce
