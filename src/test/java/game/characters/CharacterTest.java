@@ -1,6 +1,5 @@
 package game.characters;
 import org.junit.jupiter.api.Test;
-package game.characters;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CharacterTest {
