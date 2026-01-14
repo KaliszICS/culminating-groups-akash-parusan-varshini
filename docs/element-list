@@ -1,0 +1,10 @@
+game
+game.characters
+game.combat
+game.inventory
+game.minigames
+game.riddles
+game.save
+game.ui
+game.util
+game.world
