@@ -1,0 +1,8 @@
+gamble allows other inputs than those that should be expected.  This results in an instant loss.
+Gamble does also not specific what the cards are and what the range is.  Don't assume people know what to do in your games.
+The game is rather short and should be fleshed out a bit more (remember adding more enemies can be done using polymorphism to make it easy)
+Javadocs can be more fleshed out.  Some of these need more specifics to them for the coder who wants to use them.
+Well done but Final projects should be longer than this in game play, especially when so much of it is reusable.
+
+
+88
